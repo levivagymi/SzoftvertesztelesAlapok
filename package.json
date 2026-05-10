@@ -1,0 +1,20 @@
+{
+  "name": "szoftverteszteles-alapok",
+  "version": "1.0.0",
+  "description": "Szoftvertesztelés Alaptörvényei — JUnit 5 Vizsgafelkészítő",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static HTML project - no build needed'",
+    "lint": "echo 'No linter configured for static HTML'"
+  },
+  "keywords": [
+    "junit",
+    "testing",
+    "education"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
