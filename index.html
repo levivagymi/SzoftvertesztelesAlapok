@@ -762,6 +762,29 @@
       }
       .spec-total strong { color: var(--mauve); }
 
+      .spec-fulltext {
+        border: 1px solid rgba(203,166,247,0.2);
+        border-left: 3px solid var(--mauve);
+        border-radius: var(--radius-md);
+        background: rgba(203,166,247,0.04);
+        padding: 14px 18px;
+      }
+      .spec-fulltext-label {
+        font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+        letter-spacing: 0.1em; text-transform: uppercase; color: var(--mauve);
+        display: block; margin-bottom: 8px;
+      }
+      .spec-fulltext-text { font-size: 13px; color: var(--text-2); line-height: 1.75; margin: 0; }
+      .spec-code {
+        margin-top: 8px; border: 1px solid var(--border);
+        border-radius: var(--radius-sm); overflow: hidden;
+      }
+      .spec-code pre[class*="language-"] {
+        margin: 0 !important; padding: 12px 14px !important;
+        font-size: 11.5px !important; line-height: 1.6 !important;
+        border-radius: 0 !important;
+      }
+
       .footer {
         border-top: 1px solid var(--border);
         padding: 32px 0;
@@ -854,104 +877,162 @@
               <span class="spec-num">01</span>
               <span class="spec-header-text">
                 <span class="spec-title">Pizza osztály</span>
-                <span class="spec-meta">~14 teszteset · 2 checked exception · getter · setter · toString · double átlag</span>
+                <span class="spec-meta">~10 teszteset · 2 checked exception · getter/setter · toString · átlag</span>
               </span>
               <span class="spec-chevron"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
             <div class="spec-body"><div class="spec-body-inner"><div class="spec-body-content">
-              
+              <div class="spec-fulltext">
+                <span class="spec-fulltext-label">Teljes specifikáció</span>
+                <p class="spec-fulltext-text">Egy pizzáról tároljuk a nevét (String), méretét cm-ben (24, 32, 50) és bruttó árát (int, Ft)! Legyen lehetőség a nevét módosítani! Helytelen méret esetén <strong>PizzaMeretException</strong>, helytelen ár esetén <strong>PizzaArException</strong> keletkezzen (mindkettő checked)! Hozzunk létre 4 Pizza objektumot (2 érvényes, 2 érvénytelen), és az érvényeseket tároljuk listában! Hozzunk létre <strong>toString()</strong> metódust! Írjuk ki a listában szereplő pizzák átlagárát!</p>
+              </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Egy pizzáról tároljuk a nevét, méretét (24 cm, 32 cm, 50 cm), bruttó árát!"</div>
+                <div class="spec-sentence-quote">"Egy pizzáról tároljuk a nevét, méretét (24, 32, 50 cm), bruttó árát! Legyen lehetőség a nevét módosítani!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">3 adattagot kell tárolni → mind a három getterét le kell tesztelni, hogy a konstruktor helyesen állította-e be őket.</p>
+                  <p class="spec-sentence-explain">3 adattagot tárolunk → 3 getter teszt. A névhez setNev() is specifikált → azt is teszteljük. setNev() egyszerű setter, nincs exception, nincs try-catch.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">getNev()</span>
-                  <span class="spec-test-why">String értéket assertEquals-szal ellenőrzünk</span>
-                  <span class="spec-test-law">04</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">getMeret()</span>
-                  <span class="spec-test-why">int értéket assertEquals-szal ellenőrzünk</span>
-                  <span class="spec-test-law">04</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">getBruttoAr()</span>
-                  <span class="spec-test-why">int értéket assertEquals-szal ellenőrzünk</span>
-                  <span class="spec-test-law">04</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">getNev()</span><span class="spec-test-why">assertEquals — String érték egyezés</span><span class="spec-test-law">04</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">getMeret()</span><span class="spec-test-why">assertEquals — int méret egyezés</span><span class="spec-test-law">04</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">getBruttoAr()</span><span class="spec-test-why">assertEquals — int ár egyezés</span><span class="spec-test-law">04</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">setNev()</span><span class="spec-test-why">assertEquals — nincs exception, egyszerű setter</span><span class="spec-test-law">04</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test @Order(1)
+void getNevTest() {
+    Assertions.assertEquals("Pizza", p1.getNev(), "Hiba a getNev() metódus működésében!");
+}
+@Test @Order(2)
+void getMeretTest() {
+    Assertions.assertEquals(50, p4.getMeret(), "Hiba a getMeret() metódus működésében!");
+}
+@Test @Order(3)
+void getBruttoArTest() {
+    Assertions.assertEquals(2500, p1.getBruttoAr(), "Hiba a getBruttoAr() metódus működésében!");
+}
+@Test @Order(4)
+void setNevTest() {
+    p1.setNev("Kukorica");
+    Assertions.assertEquals("Kukorica", p1.getNev(), "Hiba a setNev() metódus működésében!");
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
                 <div class="spec-sentence-quote">"Helytelen méret esetén PizzaMeretException, helytelen ár esetén PizzaArException keletkezzen!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Két saját checked exception → a konstruktorban <strong>és a setterekben</strong> is tesztelni kell. Minden kivételkezelős metódushoz 2 teszteset kell: érvényes értékre ne dobjon, érvénytelen értékre dobjon.</p>
+                  <p class="spec-sentence-explain">Két saját checked exception — minden setterhez 2-2 teszteset: érvényes értékre <em>ne dobjon</em> (try + assertEquals + catch fail()), érvénytelen értékre <em>dobjon</em> (A-minta: fail() a try-ben, catch üres).</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setMeret — érvényes érték</span>
-                  <span class="spec-test-why">try + assertEquals + catch fail() — ne dobjon</span>
-                  <span class="spec-test-law">02</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setMeret — érvénytelen érték</span>
-                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
-                  <span class="spec-test-law">02</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setBruttoAr — érvényes érték</span>
-                  <span class="spec-test-why">try + assertEquals + catch fail() — ne dobjon</span>
-                  <span class="spec-test-law">02</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setBruttoAr — érvénytelen érték</span>
-                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
-                  <span class="spec-test-law">02</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">setMeret — érvényes érték</span><span class="spec-test-why">try + assertEquals + catch fail() — ne dobjon</span><span class="spec-test-law">02</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">setMeret — érvénytelen érték</span><span class="spec-test-why">A-minta: fail() try-ben, catch üres</span><span class="spec-test-law">02</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">setBruttoAr — érvényes érték</span><span class="spec-test-why">try + assertEquals + catch fail() — ne dobjon</span><span class="spec-test-law">02</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">setBruttoAr — érvénytelen érték</span><span class="spec-test-why">A-minta: fail() try-ben, catch üres</span><span class="spec-test-law">02</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test @Order(5)
+void setMeretHelyesErtekTest() {
+    try {
+        p4.setMeret(24);
+        Assertions.assertEquals(24, p4.getMeret(), "Hiba a setMeret() működésében!");
+    } catch (PizzaMeretException pme) {
+        fail("Érvényes értéknél nem dobhat kivételt!");
+    }
+}
+@Test @Order(6)
+void setMeretRosszErtekTest() {
+    try {
+        p4.setMeret(2); // nem megengedett méret
+        fail("Érvénytelen értéknél kivételt kellett volna dobni!");
+    } catch (PizzaMeretException pme) { }
+}
+@Test @Order(7)
+void setBruttoArHelyesErtekTest() {
+    try {
+        p1.setBruttoAr(4000);
+        Assertions.assertEquals(4000, p1.getBruttoAr(), "Hiba a setBruttoAr() működésében!");
+    } catch (PizzaArException pae) {
+        fail("Érvényes értéknél nem dobhat kivételt!");
+    }
+}
+@Test @Order(8)
+void setBruttoArRosszErtekTest() {
+    try {
+        p1.setBruttoAr(-4000);
+        fail("Negatív árnál kivételt kellett volna dobni!");
+    } catch (PizzaArException pae) { }
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Hozzunk létre érvényes és érvénytelen Pizza objektumokat! Az érvényes példányokat tároljuk listában!"</div>
+                <div class="spec-sentence-quote">"Hozzunk létre 4 Pizza objektumot (2 érvényes, 2 érvénytelen)! Az érvényeseket tároljuk listában!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">A @BeforeAll-ban try-catch blokkokkal hozzuk létre az objektumokat. Érvényes adat → objektum létrejön (assertNotNull). Érvénytelen adat → kivétel dobódik, az objektum null marad (assertNull). A lista mérete megmutatja hány érvényes jött létre.</p>
+                  <p class="spec-sentence-explain">A @BeforeAll-ban try-catch blokkokkal hozzuk létre az objektumokat. Érvényes adat → bekerül a listába. Érvénytelen adat → kivétel dobódik, az objektum null marad. <strong>Nincs külön assertNull/assertNotNull teszt</strong> — a listára és a getterekre támaszkodunk.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">assertNotNull(p1), assertNotNull(p4)</span>
-                  <span class="spec-test-why">érvényes adatokkal létrejött az objektum</span>
-                  <span class="spec-test-law">01</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">assertNull(p2), assertNull(p3)</span>
-                  <span class="spec-test-why">érvénytelen adatoknál null maradt</span>
-                  <span class="spec-test-law">09</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">assertEquals(2, pizzak.size())</span>
-                  <span class="spec-test-why">pontosan 2 érvényes kerül a listába</span>
-                  <span class="spec-test-law">01</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">@BeforeAll — nem @Test!</span><span class="spec-test-why">nincs direkt teszteset, ez csak setup — az objektumokat a getter/setter/toString tesztek használják</span><span class="spec-test-law">01</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">private static Pizza p1, p2, p3, p4;
+private static ArrayList&lt;Pizza&gt; pizzak;
+
+@BeforeAll
+static void beforeAll() {
+    pizzak = new ArrayList&lt;&gt;();
+    // érvényes → listába kerül
+    try { p1 = new Pizza("Pizza",   24, 2500); pizzak.add(p1); }
+    catch (PizzaMeretException pme) { } catch (PizzaArException pae) { }
+
+    try { p4 = new Pizza("Szalami", 50, 6000); pizzak.add(p4); }
+    catch (PizzaMeretException pme) { } catch (PizzaArException pae) { }
+
+    // érvénytelen → kivétel dobódik, változó null marad, listába nem kerül
+    try { p2 = new Pizza("X", 900, 300);   pizzak.add(p2); } // rossz méret
+    catch (PizzaMeretException pme) { } catch (PizzaArException pae) { }
+
+    try { p3 = new Pizza("Y", 32, -2000);  pizzak.add(p3); } // negatív ár
+    catch (PizzaMeretException pme) { } catch (PizzaArException pae) { }
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Írjuk ki a létrehozott érvényes pizzák átlagárát!"</div>
+                <div class="spec-sentence-quote">"Hozzunk létre toString() metódust!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Az átlag <strong>double visszatérési értékű</strong> → assertEquals-nál kötelező a delta paraméter (0.1), és az elvárt értéknek tizedes része kell legyen — nem 2500.0, hanem pl. 4250.0. Valójában ez attól függ mennyi a két érvényes pizza ára.</p>
+                  <p class="spec-sentence-explain">toString tesztelése: először üres String-gel futtasd le, a megbukott teszt <strong>actual</strong> értékét másold ki és illeszd be. Figyelj: a korábbi @Order-es setter tesztek <strong>módosíthatták</strong> az objektum állapotát — a toString az aktuális értékeket tükrözi!</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">atlag() / getAtlagAr()</span>
-                  <span class="spec-test-why">assertEquals + delta 0.1, nem .0 végű szám</span>
-                  <span class="spec-test-law">06</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">toString()</span><span class="spec-test-why">assertEquals — teljes String pontos egyezés</span><span class="spec-test-law">05</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test @Order(9)
+void toStringTest() {
+    // p1 állapota a setter tesztek után: nev="Kukorica", meret=24, bruttoAr=4000
+    Assertions.assertEquals(
+        "Pizza{nev: 'Kukorica', meret: 24 cm, bruttoAr: 4000 Ft}",
+        p1.toString(),
+        "Hiba a toString() metódus működésében!"
+    );
+}</code></pre></div>
                 </div>
               </div>
-              <p class="spec-total">Összes teszteset: <strong>~11</strong></p>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Írjuk ki a listában szereplő pizzák átlagárát!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Az átlag <strong>double</strong> → assertEquals-nál kötelező a delta (0.1). Ha nincs külön atlagAr() metódus, a tesztben is kiszámolhatod ciklussal. A listában lévő pizzák ára változhat a setter tesztek miatt — ellenőrizd az aktuális értékeket!</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item"><span class="spec-test-name">atlagAr / inline kiszámítás</span><span class="spec-test-why">assertEquals + delta 0.1 — double értéknél mindig!</span><span class="spec-test-law">06</span></div>
+                  </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test @Order(10)
+void atlagTest() {
+    // pizzak: p1 (bruttoAr = 4000) + p4 (bruttoAr = 6000) → átlag = 5000.0
+    // Ha van atlagAr() metódus a Pizza osztályon:
+    // Assertions.assertEquals(5000.0, p1.atlagAr(pizzak), 0.1, "Hiba: átlag");
+    // Ha nincs, inline számítás:
+    double osszeg = 0;
+    for (int i = 0; i &lt; pizzak.size(); i++) {
+        osszeg += pizzak.get(i).getBruttoAr();
+    }
+    Assertions.assertEquals(5000.0, osszeg / pizzak.size(), "Hiba az átlag számításában!");
+}</code></pre></div>
+                </div>
+              </div>
+              <p class="spec-total">Összes teszteset: <strong>~10</strong></p>
             </div></div></div>
           </div>
           
@@ -960,62 +1041,90 @@
               <span class="spec-num">02</span>
               <span class="spec-header-text">
                 <span class="spec-title">Szoveg osztály / Feldolgozo interfész</span>
-                <span class="spec-meta">5 teszteset · nincs exception · határérték · többszörös variáns</span>
+                <span class="spec-meta">5 teszteset · nincs exception · határérték · overload</span>
               </span>
               <span class="spec-chevron"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
             <div class="spec-body"><div class="spec-body-inner"><div class="spec-body-content">
-              
+              <div class="spec-fulltext">
+                <span class="spec-fulltext-label">Teljes specifikáció</span>
+                <p class="spec-fulltext-text">Hozzon létre <strong>Szoveg</strong> osztályt, amely megvalósítja a <strong>Feldolgozo</strong> interfészt! Az <strong>atalakit()</strong> metódus a szöveget 10 karakterenként sortöréssel egészítse ki! Valósítsa meg az <strong>atalakit(int sorhossz)</strong> overloadolt metódust, amely a megadott sorhossz alapján helyez el sortöréseket! Definiáljon <strong>void tisztit()</strong> metódust, amely eltávolítja a fehér karaktereket és csupa kisbetűssé alakítja a szöveget!</p>
+              </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Az átalakítást úgy kell megvalósítani, hogy a szöveget sortöréssel kell ellátni sorhosszanként (10 karakter)!"</div>
+                <div class="spec-sentence-quote">"Az atalakit() metódus a szöveget 10 karakterenként sortöréssel egészítse ki!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Az atalakit() metódust <strong>határérték alapján</strong> kell tesztelni: rövid szöveg esetén (≤ 10 karakter) nincs sortörés, hosszú szöveg esetén (> 10 karakter) van. Mindkét esetet le kell fedni.</p>
+                  <p class="spec-sentence-explain">Határérték-analízis: <strong>≤ 10 karakter</strong> → nincs sortörés, <strong>> 10 karakter</strong> → van. Fontos: a @BeforeAll-ban minden tesztesethez <strong>külön objektumot</strong> hozzunk létre, hogy ne befolyásolják egymást!</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">atalakit() — rövid szöveg (≤ 10 kar)</span>
-                  <span class="spec-test-why">assertEquals — nincs sortörés az eredményben</span>
-                  <span class="spec-test-law">09</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">atalakit() — hosszú szöveg (> 10 kar)</span>
-                  <span class="spec-test-why">assertEquals — sortörés jelenik meg az eredményben</span>
-                  <span class="spec-test-law">09</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">atalakit() — ≤ 10 karakter</span><span class="spec-test-why">assertEquals — nincs \n az eredményben</span><span class="spec-test-law">09</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">atalakit() — > 10 karakter</span><span class="spec-test-why">assertEquals — \n jelenik meg az eredményben</span><span class="spec-test-law">09</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">// Minden teszthez saját objektum a @BeforeAll-ban!
+private static Szoveg sz, sz3;
+@BeforeAll
+static void beforeAll() {
+    sz  = new Szoveg("alma");                    // 4 karakter — nincs sortörés
+    sz3 = new Szoveg("12345678901234567890123");  // 23 karakter — lesz sortörés
+    // ... (sz2, sz4, sz5 a többi teszthez)
+}
+
+@Test
+void atalakitTesztParameternelkulRovid() {
+    Assertions.assertEquals("alma", sz.atalakit(),
+        "Az atalakit() nem megfelelő rövid szöveg esetén!");
+}
+@Test
+void atalakitTesztParameternelkulHosszu() {
+    String er = "1234567890
+1234567890
+123";
+    Assertions.assertEquals(er, sz3.atalakit(),
+        "Az atalakit() nem megfelelő hosszú szöveg esetén!");
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Töltse felül az átalakító metódust úgy, hogy egész típusú paramétert fogad — karakterenként lát el sortöréssel!"</div>
+                <div class="spec-sentence-quote">"Valósítsa meg az atalakit(int sorhossz) overloadolt metódust!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Az atalakit(int) overloadolt metódus → ugyanolyan határérték tesztelés kell mint az előző, de most a paraméterként adott szám szabja meg a sorhosszt.</p>
+                  <p class="spec-sentence-explain">Ugyanolyan határérték-tesztelés, de most a paraméter szabja meg a sorhosszt. Más objektumokon teszteljük mint az atalakit()-t — ezért kell a @BeforeAll-ban külön példányosítani.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">atalakit(int) — rövid szöveg</span>
-                  <span class="spec-test-why">assertEquals — nincs sortörés a rövid szövegnél</span>
-                  <span class="spec-test-law">09</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">atalakit(int) — hosszú szöveg</span>
-                  <span class="spec-test-why">assertEquals — sortörés a paraméter szerint</span>
-                  <span class="spec-test-law">09</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">atalakit(int) — ≤ sorhossz</span><span class="spec-test-why">assertEquals — nincs sortörés</span><span class="spec-test-law">09</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">atalakit(int) — > sorhossz</span><span class="spec-test-why">assertEquals — sortörés a paraméter szerint</span><span class="spec-test-law">09</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">// @BeforeAll-ban: sz4 = new Szoveg("alma"); sz5 = new Szoveg("alma");
+@Test
+void atalakitTesztParameterrelRovid() {
+    Assertions.assertEquals("alma", sz4.atalakit(5),
+        "Az atalakit(hossz) nem megfelelő rövid szöveg esetén!");
+}
+@Test
+void atalakitTesztParameterrelHosszu() {
+    // sz5 = "alma", sorhossz = 1 → minden karakter külön sorba kerül
+    String er = "a
+l
+m
+a";
+    Assertions.assertEquals(er, sz5.atalakit(1),
+        "Az atalakit(hossz) nem megfelelő hosszú szöveg esetén!");
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Definiáljon void tisztit() metódust: eltávolítja a fehér karaktereket és csupa kisbetűssé alakítja!"</div>
+                <div class="spec-sentence-quote">"Definiáljon void tisztit() metódust: eltávolítja a fehér karaktereket és kisbetűssé alakítja!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Egyszerű void metódus, nincs kivétel → meghívjuk, majd getterrel ellenőrizzük az eredményt.</p>
+                  <p class="spec-sentence-explain">Void metódus → meghívjuk, majd <strong>getterrel</strong> ellenőrizzük az eredményt. Nincs exception → try-catch nélkül. Érdemes szóközökkel és nagybetűkkel teli szöveget használni tesztadatként.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">tisztit()</span>
-                  <span class="spec-test-why">assertEquals — a getter a várt kisbetűs, trimmed értéket adja</span>
-                  <span class="spec-test-law">04</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">tisztit()</span><span class="spec-test-why">assertEquals — getSzoveg() kisbetűs, trimelt értéket ad</span><span class="spec-test-law">04</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">// @BeforeAll-ban: sz2 = new Szoveg("      Alma             ");
+@Test
+void tisztitTeszt() {
+    sz2.tisztit(); // void — nincs visszatérési érték
+    Assertions.assertEquals("alma", sz2.getSzoveg(),
+        "A tisztit() metódus működése nem megfelelő!");
+}</code></pre></div>
                 </div>
               </div>
               <p class="spec-total">Összes teszteset: <strong>~5</strong></p>
@@ -1026,85 +1135,109 @@
             <button class="spec-trigger" aria-expanded="false">
               <span class="spec-num">03</span>
               <span class="spec-header-text">
-                <span class="spec-title">EvesLeolvasas / Szamla osztály</span>
-                <span class="spec-meta">6 teszteset · unchecked exception · double getFizetendo · setter határérték · toString</span>
+                <span class="spec-title">Butor osztály</span>
+                <span class="spec-meta">~5 teszteset · unchecked exception · másoló konstruktor · double térfogat</span>
               </span>
               <span class="spec-chevron"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
             <div class="spec-body"><div class="spec-body-inner"><div class="spec-body-content">
-              
+              <div class="spec-fulltext">
+                <span class="spec-fulltext-label">Teljes specifikáció</span>
+                <p class="spec-fulltext-text">Hozzon létre <strong>Butor</strong> osztályt, amely tárolja a bútor szélességét, magasságát, mélységét (egész, cm) és megnevezését (String)! Valósítson meg <strong>másoló konstruktort</strong>: a másolat megnevezése az eredeti nevéből és az <em>"_masolat"</em> utótagból álljon! Negatív méretérték esetén <strong>IllegalArgumentException</strong> keletkezzen! Valósítson meg <strong>toString()</strong> metódust! <strong>getTerfogat()</strong> adja vissza a bútor térfogatát (szélesség × magasság × mélység)! <strong>getOsszterfogat(lista)</strong> összesítse a listában szereplő bútorok térfogatát!</p>
+              </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Szamla absztrakt osztály tárolja a kWh árát, rendelkezik konstruktorral. Vezesse vissza az ős konstruktorára!"</div>
+                <div class="spec-sentence-quote">"Valósítson meg másoló konstruktort: a megnevezés az eredeti névből és az '_masolat' utótagból álljon!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Konstruktor tesztelése — nincs checked exception → a @BeforeAll-ban nem kell try-catch, egyszerűen példányosítunk.</p>
+                  <p class="spec-sentence-explain">Másoló konstruktor → <strong>egy tesztmetódusban</strong> ellenőrizzük az összes adattagot (4 assertEquals egymás után). Nincs checked exception → a @BeforeAll-ban <strong>try-catch nélkül</strong> példányosítunk.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">assertNotNull(el)</span>
-                  <span class="spec-test-why">a konstruktor sikeresen létrehozta az objektumot</span>
-                  <span class="spec-test-law">01</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">masoloKonstruktorTeszt()</span><span class="spec-test-why">4 assertEquals egy metódusban — mind a 4 adattagot ellenőrizzük</span><span class="spec-test-law">04</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">private static Butor b1, b2;
+
+@BeforeAll
+static void beforeAll() {
+    // Nincs checked exception → try-catch nélkül!
+    b1 = new Butor(1, 1, 1, "Asztal");
+    b2 = new Butor(b1); // másoló konstruktor
+}
+
+@Test
+void masoloKonstruktorTeszt() {
+    Assertions.assertEquals("Asztal_masolat", b2.getMegnevezes(), "Hiba a másoló konstruktor névbeállításakor!");
+    Assertions.assertEquals(1, b2.getSzelesseg(), "Hiba a másoló konstruktor szélességbeállításakor!");
+    Assertions.assertEquals(1, b2.getMagassag(),  "Hiba a másoló konstruktor magasságbeállításakor!");
+    Assertions.assertEquals(1, b2.getMelyseg(),   "Hiba a másoló konstruktor mélységbeállításakor!");
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"getFizetendo() visszaadja a hónap végén fizetendőt — éves fogyasztás 1/12-ede minden hónapban."</div>
+                <div class="spec-sentence-quote">"Negatív méretérték esetén IllegalArgumentException keletkezzen!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">A visszatérési érték <strong>double</strong> → assertEquals-nál kötelező a delta (0.1), és az elvárt értéknek tizedes része legyen (pl. 416.7, nem 416.0).</p>
+                  <p class="spec-sentence-explain"><strong>IllegalArgumentException = unchecked exception</strong> → @BeforeAll-ban nem kell try-catch. A teszteléshez itt a <strong>B-mintát</strong> alkalmazzuk: return a catch-ben, fail() a try-catch után — szemantikailag pontosabb, mint az A-minta.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">getFizetendo(3)</span>
-                  <span class="spec-test-why">assertEquals + delta 0.1 — double értéknél mindig</span>
-                  <span class="spec-test-law">06</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">negativKonstruktorTeszt</span><span class="spec-test-why">B-minta: return a catch-ben, fail() a try-catch után</span><span class="spec-test-law">02</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test
+void negativKonstruktorTeszt() {
+    try {
+        Butor b = new Butor(-1, -1, -1, "Asztal");
+    } catch (IllegalArgumentException iae) {
+        return; // B-minta: kivétel keletkezett → teszt sikeres, visszatérünk
+    }
+    fail("Nem keletkezett IllegalArgumentException negatív méretek esetén!");
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Gondoskodjon róla, hogy az egységár ne lehessen negatív, és legfeljebb a jelenlegi ár kétszeresére lehessen növelni!"</div>
+                <div class="spec-sentence-quote">"Valósítson meg toString() metódust!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">Ez <strong>két határt</strong> definiál → 3 teszteset kell: érvényes érték (nem dob), negatív érték (dob), kétszeres+1 érték (dob). Mindkét kivételesetre az A-mintát használjuk.</p>
+                  <p class="spec-sentence-explain">toString tesztelése: először üres String-gel futtasd le, a megbukott teszt <strong>actual</strong> értékét másold ki és illeszd be az expected helyére.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setEgysegAr — érvényes érték</span>
-                  <span class="spec-test-why">assertEquals, try-catch nélkül (nincs checked exception)</span>
-                  <span class="spec-test-law">02</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setEgysegAr — negatív érték</span>
-                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
-                  <span class="spec-test-law">02</span>
-                </div>
-                <div class="spec-test-item">
-                  <span class="spec-test-name">setEgysegAr — kétszeres + 1 (túl nagy)</span>
-                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
-                  <span class="spec-test-law">02</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">toString()</span><span class="spec-test-why">assertEquals — teljes String pontos egyezés</span><span class="spec-test-law">05</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test
+void toStringTeszt() {
+    Assertions.assertEquals(
+        "Szélesség: 1, Magasság: 1, Mélység: 1, Megnevezés: Asztal",
+        b1.toString(),
+        "Hiba a toString() működésében!"
+    );
+}</code></pre></div>
                 </div>
               </div>
               <div class="spec-sentence">
-                <div class="spec-sentence-quote">"Hozzon létre toString() metódust az adatok olvasható formában történő lekérdezéséhez!"</div>
+                <div class="spec-sentence-quote">"getTerfogat() adja vissza a bútor térfogatát! getOsszterfogat(lista) összesítse a listában szereplő bútorok térfogatát!"</div>
                 <div class="spec-sentence-body">
-                  <p class="spec-sentence-explain">toString tesztelése → először üres Stringgel futtatjuk, a megbukott teszt actual értékét kimásoljuk és beillesztjük.</p>
+                  <p class="spec-sentence-explain">Mindkettő <strong>double</strong> visszatérési értékű → assertEquals-nál kötelező a delta (0.1). A getOsszterfogat() a listában lévő összes bútor térfogatát összeadja.</p>
                   <span class="spec-tests-label">Tesztek:</span>
                   <div class="spec-tests">
-                <div class="spec-test-item">
-                  <span class="spec-test-name">toString()</span>
-                  <span class="spec-test-why">assertEquals — teljes String pontos egyezés</span>
-                  <span class="spec-test-law">05</span>
-                </div>
+                <div class="spec-test-item"><span class="spec-test-name">getTerfogat()</span><span class="spec-test-why">assertEquals + delta 0.1 — double értéknél mindig</span><span class="spec-test-law">06</span></div>
+                <div class="spec-test-item"><span class="spec-test-name">getOsszterfogat(lista)</span><span class="spec-test-why">assertEquals + delta 0.1 — összesített double</span><span class="spec-test-law">06</span></div>
                   </div>
+                  <div class="spec-code"><pre class="language-java"><code class="language-java">@Test
+void getTerfogatTeszt() {
+    // b1 = Butor(1, 1, 1, ...) → 1 × 1 × 1 = 1.0
+    Assertions.assertEquals(1.0, b1.getTerfogat(), 0.1, "Hiba a getTerfogat() működésében!");
+}
+
+@Test
+void getOsszterfogatTeszt() {
+    ArrayList&lt;Butor&gt; butorok = new ArrayList&lt;&gt;();
+    butorok.add(b1);
+    butorok.add(b2); // b2 is Butor(1,1,1,...) → terfogat = 1.0
+    // b1 + b2 → 1.0 + 1.0 = 2.0
+    Assertions.assertEquals(2.0, Butor.getOsszterfogat(butorok), 0.1, "Hiba a getOsszterfogat() működésében!");
+}</code></pre></div>
                 </div>
               </div>
-              <p class="spec-total">Összes teszteset: <strong>~6</strong></p>
+              <p class="spec-total">Összes teszteset: <strong>~5</strong></p>
             </div></div></div>
           </div>
         </div>
       </div>
-    </section>
     </section>
 
     <section class="section">

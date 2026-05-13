@@ -7,7 +7,8 @@
       "Bash(del \"c:\\\\Users\\\\narin\\\\Desktop\\\\SzoftvertTesztelés\\\\SzoftvertesztelesAlapok\\\\quiz_replace.py\")",
       "Bash(python3 spec_insert.py)",
       "Bash(python spec_rewrite.py)",
-      "Bash(del \"c:/Users/narin/Desktop/SzoftvertTesztelés/SzoftvertesztelesAlapok/spec_rewrite.py\")"
+      "Bash(del \"c:/Users/narin/Desktop/SzoftvertTesztelés/SzoftvertesztelesAlapok/spec_rewrite.py\")",
+      "Bash(python spec3.py)"
     ]
   }
 }
