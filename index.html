@@ -1,236 +1,1204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hu" data-theme="dark">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Szoftvertesztelés Alaptörvényei — JUnit 5 Vizsgafelkészítő</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
-<style>
-  :root {
-    --bg-0:          #0a0e14;
-    --bg-1:          #0f1319;
-    --bg-2:          #161c26;
-    --bg-3:          #1e2533;
-    --bg-card:       #131820;
-    --border:        #232c3d;
-    --border-hover:  #2e3f5c;
-    --text-1:        #cdd6f4;
-    --text-2:        #8899b8;
-    --text-3:        #556080;
-    --accent:        #89b4fa;
-    --accent-dim:    #1d2d4a;
-    --green:         #a6e3a1;
-    --green-dim:     #1a2e1a;
-    --red:           #f38ba8;
-    --red-dim:       #2e1a1f;
-    --mauve:         #cba6f7;
-    --font-sans:     'Space Grotesk', system-ui, sans-serif;
-    --font-mono:     'JetBrains Mono', 'Fira Code', monospace;
-    --radius-sm:     4px;
-    --radius-md:     8px;
-    --ease-out:      cubic-bezier(0, 0, 0.2, 1);
-    --dur-fast:      150ms;
-    --dur-normal:    250ms;
-    --dur-slow:      400ms;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg-0); color: var(--text-1); font-family: var(--font-sans); font-size: 16px; line-height: 1.6; min-height: 100vh; }
-  img, svg { display: block; }
-  .container { width: 100%; max-width: 860px; margin: 0 auto; padding: 0 20px; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Szoftvertesztelés Alaptörvényei — JUnit 5 Vizsgafelkészítő</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-0: #0a0e14;
+        --bg-1: #0f1319;
+        --bg-2: #161c26;
+        --bg-3: #1e2533;
+        --bg-card: #131820;
+        --border: #232c3d;
+        --border-hover: #2e3f5c;
+        --text-1: #cdd6f4;
+        --text-2: #8899b8;
+        --text-3: #556080;
+        --accent: #89b4fa;
+        --accent-dim: #1d2d4a;
+        --green: #a6e3a1;
+        --green-dim: #1a2e1a;
+        --red: #f38ba8;
+        --red-dim: #2e1a1f;
+        --mauve: #cba6f7;
+        --font-sans: "Space Grotesk", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", "Fira Code", monospace;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --ease-out: cubic-bezier(0, 0, 0.2, 1);
+        --dur-fast: 150ms;
+        --dur-normal: 250ms;
+        --dur-slow: 400ms;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg-0);
+        color: var(--text-1);
+        font-family: var(--font-sans);
+        font-size: 16px;
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+      img,
+      svg {
+        display: block;
+      }
+      .container {
+        width: 100%;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
 
-  .hero {
-    position: relative; overflow: hidden;
-    padding: 72px 0 64px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-1);
-  }
-  .hero::before {
-    content: ''; position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 50%, rgba(137,180,250,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(203,166,247,0.05) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
-    margin-bottom: 20px; padding: 5px 12px;
-    border: 1px solid var(--accent-dim); border-radius: var(--radius-sm);
-    background: rgba(137,180,250,0.06);
-  }
-  .hero-eyebrow::before { content: '//'; opacity: 0.5; }
-  .hero h1 {
-    font-size: clamp(28px, 5vw, 52px); font-weight: 700;
-    line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px;
-    background: linear-gradient(135deg, var(--text-1) 0%, var(--accent) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  }
-  .hero-sub { font-size: clamp(14px, 2.5vw, 17px); color: var(--text-2); max-width: 540px; margin-bottom: 32px; line-height: 1.7; }
-  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .tag { font-family: var(--font-mono); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); color: var(--text-3); background: var(--bg-2); letter-spacing: 0.04em; }
-  .tag--accent { color: var(--accent); border-color: var(--accent-dim); background: rgba(137,180,250,0.05); }
-  .tag--green  { color: var(--green);  border-color: var(--green-dim);  background: rgba(166,227,161,0.05); }
-  .tag--mauve  { color: var(--mauve);  border-color: rgba(203,166,247,0.2); background: rgba(203,166,247,0.05); }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 72px 0 64px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-1);
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 60% 50% at 20% 50%,
+            rgba(137, 180, 250, 0.06) 0%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 40% 60% at 80% 30%,
+            rgba(203, 166, 247, 0.05) 0%,
+            transparent 70%
+          );
+        pointer-events: none;
+      }
+      .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 20px;
+        padding: 5px 12px;
+        border: 1px solid var(--accent-dim);
+        border-radius: var(--radius-sm);
+        background: rgba(137, 180, 250, 0.06);
+      }
+      .hero-eyebrow::before {
+        content: "//";
+        opacity: 0.5;
+      }
+      .hero h1 {
+        font-size: clamp(28px, 5vw, 52px);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+        background: linear-gradient(
+          135deg,
+          var(--text-1) 0%,
+          var(--accent) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-sub {
+        font-size: clamp(14px, 2.5vw, 17px);
+        color: var(--text-2);
+        max-width: 540px;
+        margin-bottom: 32px;
+        line-height: 1.7;
+      }
+      .hero-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tag {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        color: var(--text-3);
+        background: var(--bg-2);
+        letter-spacing: 0.04em;
+      }
+      .tag--accent {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+        background: rgba(137, 180, 250, 0.05);
+      }
+      .tag--green {
+        color: var(--green);
+        border-color: var(--green-dim);
+        background: rgba(166, 227, 161, 0.05);
+      }
+      .tag--mauve {
+        color: var(--mauve);
+        border-color: rgba(203, 166, 247, 0.2);
+        background: rgba(203, 166, 247, 0.05);
+      }
 
-  .section { padding: 56px 0; }
-  .section + .section { border-top: 1px solid var(--border); }
-  .section-label { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
-  .section-title { font-size: clamp(20px, 3vw, 28px); font-weight: 700; letter-spacing: -0.01em; color: var(--text-1); margin-bottom: 8px; }
-  .section-desc { font-size: 15px; color: var(--text-2); margin-bottom: 36px; max-width: 600px; line-height: 1.7; }
+      .section {
+        padding: 56px 0;
+      }
+      .section + .section {
+        border-top: 1px solid var(--border);
+      }
+      .section-label {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-3);
+        margin-bottom: 8px;
+      }
+      .section-title {
+        font-size: clamp(20px, 3vw, 28px);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--text-1);
+        margin-bottom: 8px;
+      }
+      .section-desc {
+        font-size: 15px;
+        color: var(--text-2);
+        margin-bottom: 36px;
+        max-width: 600px;
+        line-height: 1.7;
+      }
 
-  .laws-list { display: flex; flex-direction: column; gap: 6px; }
-  .law-card { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); overflow: hidden; transition: border-color var(--dur-fast) var(--ease-out); }
-  .law-card:hover { border-color: var(--border-hover); }
-  .law-card.open  { border-color: var(--border-hover); }
-  .law-trigger { display: flex; align-items: flex-start; gap: 16px; width: 100%; padding: 18px 20px; background: none; border: none; cursor: pointer; text-align: left; color: inherit; font-family: inherit; transition: background var(--dur-fast) var(--ease-out); }
-  .law-trigger:hover { background: rgba(255,255,255,0.02); }
-  .law-num { flex-shrink: 0; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-3); padding: 3px 7px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-2); margin-top: 2px; min-width: 34px; text-align: center; letter-spacing: 0.04em; }
-  .law-card.open .law-num { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-dim); }
-  .law-header-text { flex: 1; }
-  .law-title { font-size: 15px; font-weight: 600; color: var(--text-1); line-height: 1.3; margin-bottom: 3px; }
-  .law-subtitle { font-size: 13px; color: var(--text-3); font-family: var(--font-mono); }
-  .law-chevron { flex-shrink: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; margin-top: 2px; color: var(--text-3); transition: transform var(--dur-normal) var(--ease-out), color var(--dur-fast); }
-  .law-card.open .law-chevron { transform: rotate(180deg); color: var(--accent); }
-  .law-chevron svg { width: 16px; height: 16px; }
+      .laws-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .law-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        overflow: hidden;
+        transition: border-color var(--dur-fast) var(--ease-out);
+      }
+      .law-card:hover {
+        border-color: var(--border-hover);
+      }
+      .law-card.open {
+        border-color: var(--border-hover);
+      }
+      .law-trigger {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        width: 100%;
+        padding: 18px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        color: inherit;
+        font-family: inherit;
+        transition: background var(--dur-fast) var(--ease-out);
+      }
+      .law-trigger:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .law-num {
+        flex-shrink: 0;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-3);
+        padding: 3px 7px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-2);
+        margin-top: 2px;
+        min-width: 34px;
+        text-align: center;
+        letter-spacing: 0.04em;
+      }
+      .law-card.open .law-num {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+        background: var(--accent-dim);
+      }
+      .law-header-text {
+        flex: 1;
+      }
+      .law-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-1);
+        line-height: 1.3;
+        margin-bottom: 3px;
+      }
+      .law-subtitle {
+        font-size: 13px;
+        color: var(--text-3);
+        font-family: var(--font-mono);
+      }
+      .law-chevron {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+        color: var(--text-3);
+        transition:
+          transform var(--dur-normal) var(--ease-out),
+          color var(--dur-fast);
+      }
+      .law-card.open .law-chevron {
+        transform: rotate(180deg);
+        color: var(--accent);
+      }
+      .law-chevron svg {
+        width: 16px;
+        height: 16px;
+      }
 
-  .law-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-slow) var(--ease-out); }
-  .law-card.open .law-body { grid-template-rows: 1fr; }
-  .law-body-inner { overflow: hidden; }
-  .law-body-content { padding: 0 20px 24px; border-top: 1px solid var(--border); margin-top: -1px; padding-top: 20px; }
-  .law-explanation { font-size: 14px; color: var(--text-2); line-height: 1.75; margin-bottom: 20px; }
-  .law-explanation strong { color: var(--text-1); font-weight: 600; }
-  .law-why { display: flex; gap: 10px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--accent-dim); border: 1px solid rgba(137,180,250,0.15); margin-top: 16px; font-size: 13px; color: var(--text-2); line-height: 1.6; }
-  .law-why::before { content: '💡'; flex-shrink: 0; font-size: 14px; }
-  .law-why strong { color: var(--accent); }
-  .law-antipattern { display: flex; gap: 10px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--red-dim); border: 1px solid rgba(243,139,168,0.15); margin-top: 10px; font-size: 13px; color: var(--text-2); line-height: 1.6; }
-  .law-antipattern::before { content: '⚠️'; flex-shrink: 0; font-size: 14px; }
-  .law-antipattern strong { color: var(--red); }
-  .code-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; margin-top: 18px; }
-  pre[class*="language-"] { margin: 0 !important; border-radius: var(--radius-md) !important; border: 1px solid var(--border) !important; font-size: 12.5px !important; line-height: 1.65 !important; font-family: var(--font-mono) !important; background: var(--bg-0) !important; padding: 16px !important; overflow-x: auto; }
+      .law-body {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows var(--dur-slow) var(--ease-out);
+      }
+      .law-card.open .law-body {
+        grid-template-rows: 1fr;
+      }
+      .law-body-inner {
+        overflow: hidden;
+      }
+      .law-body-content {
+        padding: 0 20px 24px;
+        border-top: 1px solid var(--border);
+        margin-top: -1px;
+        padding-top: 20px;
+      }
+      .law-explanation {
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.75;
+        margin-bottom: 20px;
+      }
+      .law-explanation strong {
+        color: var(--text-1);
+        font-weight: 600;
+      }
+      .law-why {
+        display: flex;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--accent-dim);
+        border: 1px solid rgba(137, 180, 250, 0.15);
+        margin-top: 16px;
+        font-size: 13px;
+        color: var(--text-2);
+        line-height: 1.6;
+      }
+      .law-why::before {
+        content: "💡";
+        flex-shrink: 0;
+        font-size: 14px;
+      }
+      .law-why strong {
+        color: var(--accent);
+      }
+      .law-antipattern {
+        display: flex;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--red-dim);
+        border: 1px solid rgba(243, 139, 168, 0.15);
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--text-2);
+        line-height: 1.6;
+      }
+      .law-antipattern::before {
+        content: "⚠️";
+        flex-shrink: 0;
+        font-size: 14px;
+      }
+      .law-antipattern strong {
+        color: var(--red);
+      }
+      .code-label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-3);
+        margin-bottom: 6px;
+        margin-top: 18px;
+      }
+      pre[class*="language-"] {
+        margin: 0 !important;
+        border-radius: var(--radius-md) !important;
+        border: 1px solid var(--border) !important;
+        font-size: 12.5px !important;
+        line-height: 1.65 !important;
+        font-family: var(--font-mono) !important;
+        background: var(--bg-0) !important;
+        padding: 16px !important;
+        overflow-x: auto;
+      }
 
-  .quiz-score-bar { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); margin-bottom: 28px; }
-  .score-label { font-size: 13px; color: var(--text-3); font-family: var(--font-mono); }
-  .score-value { font-size: 22px; font-weight: 700; color: var(--accent); font-family: var(--font-mono); }
-  .score-track { flex: 1; height: 6px; background: var(--bg-2); border-radius: 99px; overflow: hidden; }
-  .score-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width var(--dur-slow) var(--ease-out); }
-  .score-reset { margin-left: auto; font-size: 12px; font-family: var(--font-mono); color: var(--text-3); background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 5px 10px; cursor: pointer; transition: color var(--dur-fast), border-color var(--dur-fast); }
-  .score-reset:hover { color: var(--text-2); border-color: var(--border-hover); }
-  .quiz-questions { display: flex; flex-direction: column; gap: 16px; }
-  .question-card { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-card); padding: 20px; transition: border-color var(--dur-fast); }
-  .question-card.answered-correct { border-color: rgba(166,227,161,0.4); background: rgba(166,227,161,0.03); }
-  .question-card.answered-wrong   { border-color: rgba(243,139,168,0.4); background: rgba(243,139,168,0.03); }
-  .question-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .question-num { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--text-3); padding: 2px 7px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-2); letter-spacing: 0.05em; }
-  .question-badge { font-family: var(--font-mono); font-size: 10px; color: var(--mauve); padding: 2px 7px; border: 1px solid rgba(203,166,247,0.2); border-radius: var(--radius-sm); background: rgba(203,166,247,0.05); letter-spacing: 0.04em; }
-  .question-text { font-size: 14px; font-weight: 500; color: var(--text-1); margin-bottom: 16px; line-height: 1.6; }
-  .options { display: flex; flex-direction: column; gap: 8px; }
-  .option { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; background: var(--bg-2); font-size: 13.5px; color: var(--text-2); line-height: 1.5; transition: border-color var(--dur-fast), background var(--dur-fast), color var(--dur-fast); user-select: none; }
-  .option:hover:not(.disabled) { border-color: var(--border-hover); background: var(--bg-3); color: var(--text-1); }
-  .option.disabled { cursor: default; }
-  .option.correct { border-color: rgba(166,227,161,0.5); background: rgba(166,227,161,0.08); color: var(--green); }
-  .option.wrong   { border-color: rgba(243,139,168,0.5); background: rgba(243,139,168,0.08); color: var(--red); }
-  .option-dot { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); margin-top: 1px; transition: border-color var(--dur-fast), background var(--dur-fast); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: transparent; }
-  .option.correct .option-dot { border-color: var(--green); background: var(--green); color: var(--bg-0); }
-  .option.wrong   .option-dot { border-color: var(--red);   background: var(--red);   color: var(--bg-0); }
-  .question-feedback { margin-top: 12px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.6; display: none; }
-  .question-feedback.show { display: block; }
-  .question-feedback.correct-fb { background: var(--green-dim); border: 1px solid rgba(166,227,161,0.2); color: var(--green); }
-  .question-feedback.wrong-fb   { background: var(--red-dim);   border: 1px solid rgba(243,139,168,0.2); color: var(--red); }
-  .question-feedback strong { font-weight: 600; }
+      .quiz-score-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        margin-bottom: 28px;
+      }
+      .score-label {
+        font-size: 13px;
+        color: var(--text-3);
+        font-family: var(--font-mono);
+      }
+      .score-value {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--accent);
+        font-family: var(--font-mono);
+      }
+      .score-track {
+        flex: 1;
+        height: 6px;
+        background: var(--bg-2);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .score-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 99px;
+        transition: width var(--dur-slow) var(--ease-out);
+      }
+      .score-reset {
+        margin-left: auto;
+        font-size: 12px;
+        font-family: var(--font-mono);
+        color: var(--text-3);
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 5px 10px;
+        cursor: pointer;
+        transition:
+          color var(--dur-fast),
+          border-color var(--dur-fast);
+      }
+      .score-reset:hover {
+        color: var(--text-2);
+        border-color: var(--border-hover);
+      }
+      .quiz-questions {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .question-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        padding: 20px;
+        transition: border-color var(--dur-fast);
+      }
+      .question-card.answered-correct {
+        border-color: rgba(166, 227, 161, 0.4);
+        background: rgba(166, 227, 161, 0.03);
+      }
+      .question-card.answered-wrong {
+        border-color: rgba(243, 139, 168, 0.4);
+        background: rgba(243, 139, 168, 0.03);
+      }
+      .question-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .question-num {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text-3);
+        padding: 2px 7px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-2);
+        letter-spacing: 0.05em;
+      }
+      .question-badge {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--mauve);
+        padding: 2px 7px;
+        border: 1px solid rgba(203, 166, 247, 0.2);
+        border-radius: var(--radius-sm);
+        background: rgba(203, 166, 247, 0.05);
+        letter-spacing: 0.04em;
+      }
+      .question-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-1);
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+      .options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 11px 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        background: var(--bg-2);
+        font-size: 13.5px;
+        color: var(--text-2);
+        line-height: 1.5;
+        transition:
+          border-color var(--dur-fast),
+          background var(--dur-fast),
+          color var(--dur-fast);
+        user-select: none;
+      }
+      .option:hover:not(.disabled) {
+        border-color: var(--border-hover);
+        background: var(--bg-3);
+        color: var(--text-1);
+      }
+      .option.disabled {
+        cursor: default;
+      }
+      .option.correct {
+        border-color: rgba(166, 227, 161, 0.5);
+        background: rgba(166, 227, 161, 0.08);
+        color: var(--green);
+      }
+      .option.wrong {
+        border-color: rgba(243, 139, 168, 0.5);
+        background: rgba(243, 139, 168, 0.08);
+        color: var(--red);
+      }
+      .option-dot {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        margin-top: 1px;
+        transition:
+          border-color var(--dur-fast),
+          background var(--dur-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: transparent;
+      }
+      .option.correct .option-dot {
+        border-color: var(--green);
+        background: var(--green);
+        color: var(--bg-0);
+      }
+      .option.wrong .option-dot {
+        border-color: var(--red);
+        background: var(--red);
+        color: var(--bg-0);
+      }
+      .question-feedback {
+        margin-top: 12px;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        line-height: 1.6;
+        display: none;
+      }
+      .question-feedback.show {
+        display: block;
+      }
+      .question-feedback.correct-fb {
+        background: var(--green-dim);
+        border: 1px solid rgba(166, 227, 161, 0.2);
+        color: var(--green);
+      }
+      .question-feedback.wrong-fb {
+        background: var(--red-dim);
+        border: 1px solid rgba(243, 139, 168, 0.2);
+        color: var(--red);
+      }
+      .question-feedback strong {
+        font-weight: 600;
+      }
 
-  .footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.05em; background: var(--bg-1); }
-  .footer span { color: var(--accent); }
+      .tips-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .tips-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px 18px;
+        border: 1px solid rgba(137, 180, 250, 0.2);
+        border-left: 3px solid var(--accent);
+        border-radius: var(--radius-md);
+        background: rgba(137, 180, 250, 0.05);
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.7;
+      }
+      .tips-list li .tip-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .tips-list li strong {
+        color: var(--text-1);
+        font-weight: 600;
+      }
 
-  @media (max-width: 600px) {
-    .hero { padding: 48px 0 40px; }
-    .section { padding: 40px 0; }
-    .law-trigger { padding: 14px 16px; gap: 12px; }
-    .law-body-content { padding: 16px 16px 20px; }
-    .question-card { padding: 16px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { transition-duration: 0ms !important; }
-    .law-body { transition: none !important; }
-  }
-</style>
-</head>
-<body>
+      .checklist {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .checklist li {
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        font-size: 14px;
+        color: var(--text-2);
+        line-height: 1.6;
+        transition: border-color var(--dur-fast), background var(--dur-fast);
+      }
+      .checklist li:has(input:checked) {
+        border-color: rgba(166, 227, 161, 0.4);
+        background: rgba(166, 227, 161, 0.04);
+        color: var(--text-3);
+        text-decoration: line-through;
+      }
+      .checklist li label {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        width: 100%;
+      }
+      .checklist li input[type="checkbox"] {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        margin-top: 3px;
+        accent-color: var(--green);
+        cursor: pointer;
+      }
+      .checklist li code {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--accent);
+        background: var(--accent-dim);
+        padding: 1px 5px;
+        border-radius: 3px;
+      }
 
-<header class="hero">
-  <div class="container">
-    <div class="hero-eyebrow">Szoftvertesztelés Alapok</div>
-    <h1>A Szoftvertesztelés Alaptörvényei</h1>
-    <p class="hero-sub">
-      Tanuld meg, mikor melyik JUnit 5 eszközt kell használni, hogyan nevezd el a teszted,
-      és milyen hibákat ne kövess el — vizsgafelkészítő az egységtesztelés dolgozathoz.
-    </p>
-    <div class="hero-tags">
-      <span class="tag tag--accent">Java 17+</span>
-      <span class="tag tag--green">JUnit 5</span>
-      <span class="tag tag--mauve">Maven</span>
-      <span class="tag">@BeforeAll</span>
-      <span class="tag">assertEquals</span>
-      <span class="tag">fail()</span>
-      <span class="tag">try-catch</span>
-      <span class="tag">delta</span>
-    </div>
-  </div>
-</header>
+      .spec-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .spec-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        overflow: hidden;
+        transition: border-color var(--dur-fast) var(--ease-out);
+      }
+      .spec-card:hover { border-color: var(--border-hover); }
+      .spec-card.open  { border-color: rgba(203,166,247,0.3); }
+      .spec-trigger {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        width: 100%;
+        padding: 18px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+        color: inherit;
+        font-family: inherit;
+        transition: background var(--dur-fast) var(--ease-out);
+      }
+      .spec-trigger:hover { background: rgba(255,255,255,0.02); }
+      .spec-num {
+        flex-shrink: 0;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-3);
+        padding: 3px 7px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-2);
+        margin-top: 2px;
+        min-width: 34px;
+        text-align: center;
+        letter-spacing: 0.04em;
+      }
+      .spec-card.open .spec-num {
+        color: var(--mauve);
+        border-color: rgba(203,166,247,0.25);
+        background: rgba(203,166,247,0.08);
+      }
+      .spec-header-text { flex: 1; }
+      .spec-title { font-size: 15px; font-weight: 600; color: var(--text-1); line-height: 1.3; margin-bottom: 3px; display: block; }
+      .spec-meta  { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); display: block; }
+      .spec-chevron {
+        flex-shrink: 0; width: 20px; height: 20px; display: flex;
+        align-items: center; justify-content: center; margin-top: 2px;
+        color: var(--text-3);
+        transition: transform var(--dur-normal) var(--ease-out), color var(--dur-fast);
+      }
+      .spec-card.open .spec-chevron { transform: rotate(180deg); color: var(--mauve); }
+      .spec-chevron svg { width: 16px; height: 16px; }
+      .spec-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-slow) var(--ease-out); }
+      .spec-card.open .spec-body { grid-template-rows: 1fr; }
+      .spec-body-inner { overflow: hidden; }
+      .spec-body-content { padding: 20px 20px 24px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
 
-<section class="section">
-  <div class="container">
-    <p class="section-label">// 11 törvény</p>
-    <h2 class="section-title">Az Alaptörvények</h2>
-    <p class="section-desc">
-      Kattints egy kártyára a szabály, a kódpélda és a magyarázat megtekintéséhez.
-      Minden törvény közvetlenül a feltöltött tesztosztályokból van levezetve.
-    </p>
-    <div class="laws-list" id="laws"></div>
-  </div>
-</section>
+      .spec-sentence {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+      .spec-sentence-quote {
+        padding: 12px 16px;
+        background: rgba(203,166,247,0.05);
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        color: var(--mauve);
+        font-style: italic;
+        line-height: 1.65;
+      }
+      .spec-sentence-body { padding: 14px 16px; background: var(--bg-2); display: flex; flex-direction: column; gap: 10px; }
+      .spec-sentence-explain { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+      .spec-sentence-explain strong { color: var(--text-1); font-weight: 600; }
+      .spec-tests-label {
+        font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+        letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3);
+      }
+      .spec-tests { display: flex; flex-direction: column; gap: 5px; }
+      .spec-test-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+      }
+      .spec-test-name { font-size: 13px; color: var(--text-1); flex: 1; }
+      .spec-test-why  { font-size: 12px; color: var(--text-3); flex: 2; }
+      .spec-test-law  {
+        font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+        color: var(--accent); background: var(--accent-dim);
+        border: 1px solid rgba(137,180,250,0.15);
+        padding: 2px 7px; border-radius: var(--radius-sm); white-space: nowrap;
+      }
+      .spec-total {
+        font-family: var(--font-mono); font-size: 12px;
+        color: var(--text-3); text-align: right; padding-top: 4px;
+      }
+      .spec-total strong { color: var(--mauve); }
 
-<section class="section">
-  <div class="container">
-    <p class="section-label">// interaktív kvíz</p>
-    <h2 class="section-title">Teszteld a Tudásod</h2>
-    <p class="section-desc">
-      Melyik törvényt kell alkalmazni az adott szituációban? Azonnali visszajelzés, pontszám nyilvántartás.
-    </p>
-    <div class="quiz-score-bar">
-      <div>
-        <div class="score-label">PONTSZÁM</div>
-        <div class="score-value" id="scoreDisplay">0 / 10</div>
+      .footer {
+        border-top: 1px solid var(--border);
+        padding: 32px 0;
+        text-align: center;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-3);
+        letter-spacing: 0.05em;
+        background: var(--bg-1);
+      }
+      .footer span {
+        color: var(--accent);
+      }
+
+      @media (max-width: 600px) {
+        .hero {
+          padding: 48px 0 40px;
+        }
+        .section {
+          padding: 40px 0;
+        }
+        .law-trigger {
+          padding: 14px 16px;
+          gap: 12px;
+        }
+        .law-body-content {
+          padding: 16px 16px 20px;
+        }
+        .question-card {
+          padding: 16px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0ms !important;
+        }
+        .law-body {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <div class="hero-eyebrow">Szoftvertesztelés Alapok</div>
+        <h1>A Szoftvertesztelés Alaptörvényei</h1>
+        <p class="hero-sub">
+          Tanuld meg, mikor melyik JUnit 5 eszközt kell használni, hogyan nevezd
+          el a teszted, és milyen hibákat ne kövess el — vizsgafelkészítő az
+          egységtesztelés dolgozathoz.
+        </p>
+        <div class="hero-tags">
+          <span class="tag tag--accent">Java 17+</span>
+          <span class="tag tag--green">JUnit 5</span>
+          <span class="tag tag--mauve">Maven</span>
+          <span class="tag">@BeforeAll</span>
+          <span class="tag">assertEquals</span>
+          <span class="tag">fail()</span>
+          <span class="tag">try-catch</span>
+          <span class="tag">delta</span>
+        </div>
       </div>
-      <div class="score-track"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
-      <button class="score-reset" id="resetBtn">Újrakezdés</button>
-    </div>
-    <div class="quiz-questions" id="quiz"></div>
-  </div>
-</section>
+    </header>
 
-<footer class="footer">
-  <div class="container">
-    <span>Szoftvertesztelés Alapok</span> · JUnit 5 · Java Maven · Vizsgafelkészítő
-  </div>
-</footer>
+    <section class="section">
+      <div class="container">
+        <p class="section-label">// 11 törvény</p>
+        <h2 class="section-title">Az Alaptörvények</h2>
+        <p class="section-desc">
+          Kattints egy kártyára a szabály, a kódpélda és a magyarázat
+          megtekintéséhez. Minden törvény közvetlenül a feltöltött
+          tesztosztályokból van levezetve.
+        </p>
+        <div class="laws-list" id="laws"></div>
+      </div>
+    </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
-<script>
-// ── DATA ──────────────────────────────────────────────────────────────────
+    <section class="section">
+      <div class="container">
+        <p class="section-label">// specifikáció elemzés</p>
+        <h2 class="section-title">Specifikáció Elemzése</h2>
+        <p class="section-desc">3 valós vizsgafeladat mondatról mondatra — mi következik az egyes mondatokból, milyen tesztet kell hozzá írni és miért.</p>
+        <div class="spec-list">
+          
+          <div class="spec-card">
+            <button class="spec-trigger" aria-expanded="false">
+              <span class="spec-num">01</span>
+              <span class="spec-header-text">
+                <span class="spec-title">Pizza osztály</span>
+                <span class="spec-meta">~14 teszteset · 2 checked exception · getter · setter · toString · double átlag</span>
+              </span>
+              <span class="spec-chevron"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+            <div class="spec-body"><div class="spec-body-inner"><div class="spec-body-content">
+              
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Egy pizzáról tároljuk a nevét, méretét (24 cm, 32 cm, 50 cm), bruttó árát!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">3 adattagot kell tárolni → mind a három getterét le kell tesztelni, hogy a konstruktor helyesen állította-e be őket.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">getNev()</span>
+                  <span class="spec-test-why">String értéket assertEquals-szal ellenőrzünk</span>
+                  <span class="spec-test-law">04</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">getMeret()</span>
+                  <span class="spec-test-why">int értéket assertEquals-szal ellenőrzünk</span>
+                  <span class="spec-test-law">04</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">getBruttoAr()</span>
+                  <span class="spec-test-why">int értéket assertEquals-szal ellenőrzünk</span>
+                  <span class="spec-test-law">04</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Helytelen méret esetén PizzaMeretException, helytelen ár esetén PizzaArException keletkezzen!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Két saját checked exception → a konstruktorban <strong>és a setterekben</strong> is tesztelni kell. Minden kivételkezelős metódushoz 2 teszteset kell: érvényes értékre ne dobjon, érvénytelen értékre dobjon.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setMeret — érvényes érték</span>
+                  <span class="spec-test-why">try + assertEquals + catch fail() — ne dobjon</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setMeret — érvénytelen érték</span>
+                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setBruttoAr — érvényes érték</span>
+                  <span class="spec-test-why">try + assertEquals + catch fail() — ne dobjon</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setBruttoAr — érvénytelen érték</span>
+                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Hozzunk létre érvényes és érvénytelen Pizza objektumokat! Az érvényes példányokat tároljuk listában!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">A @BeforeAll-ban try-catch blokkokkal hozzuk létre az objektumokat. Érvényes adat → objektum létrejön (assertNotNull). Érvénytelen adat → kivétel dobódik, az objektum null marad (assertNull). A lista mérete megmutatja hány érvényes jött létre.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">assertNotNull(p1), assertNotNull(p4)</span>
+                  <span class="spec-test-why">érvényes adatokkal létrejött az objektum</span>
+                  <span class="spec-test-law">01</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">assertNull(p2), assertNull(p3)</span>
+                  <span class="spec-test-why">érvénytelen adatoknál null maradt</span>
+                  <span class="spec-test-law">09</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">assertEquals(2, pizzak.size())</span>
+                  <span class="spec-test-why">pontosan 2 érvényes kerül a listába</span>
+                  <span class="spec-test-law">01</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Írjuk ki a létrehozott érvényes pizzák átlagárát!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Az átlag <strong>double visszatérési értékű</strong> → assertEquals-nál kötelező a delta paraméter (0.1), és az elvárt értéknek tizedes része kell legyen — nem 2500.0, hanem pl. 4250.0. Valójában ez attól függ mennyi a két érvényes pizza ára.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">atlag() / getAtlagAr()</span>
+                  <span class="spec-test-why">assertEquals + delta 0.1, nem .0 végű szám</span>
+                  <span class="spec-test-law">06</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <p class="spec-total">Összes teszteset: <strong>~11</strong></p>
+            </div></div></div>
+          </div>
+          
+          <div class="spec-card">
+            <button class="spec-trigger" aria-expanded="false">
+              <span class="spec-num">02</span>
+              <span class="spec-header-text">
+                <span class="spec-title">Szoveg osztály / Feldolgozo interfész</span>
+                <span class="spec-meta">5 teszteset · nincs exception · határérték · többszörös variáns</span>
+              </span>
+              <span class="spec-chevron"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+            <div class="spec-body"><div class="spec-body-inner"><div class="spec-body-content">
+              
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Az átalakítást úgy kell megvalósítani, hogy a szöveget sortöréssel kell ellátni sorhosszanként (10 karakter)!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Az atalakit() metódust <strong>határérték alapján</strong> kell tesztelni: rövid szöveg esetén (≤ 10 karakter) nincs sortörés, hosszú szöveg esetén (> 10 karakter) van. Mindkét esetet le kell fedni.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">atalakit() — rövid szöveg (≤ 10 kar)</span>
+                  <span class="spec-test-why">assertEquals — nincs sortörés az eredményben</span>
+                  <span class="spec-test-law">09</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">atalakit() — hosszú szöveg (> 10 kar)</span>
+                  <span class="spec-test-why">assertEquals — sortörés jelenik meg az eredményben</span>
+                  <span class="spec-test-law">09</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Töltse felül az átalakító metódust úgy, hogy egész típusú paramétert fogad — karakterenként lát el sortöréssel!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Az atalakit(int) overloadolt metódus → ugyanolyan határérték tesztelés kell mint az előző, de most a paraméterként adott szám szabja meg a sorhosszt.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">atalakit(int) — rövid szöveg</span>
+                  <span class="spec-test-why">assertEquals — nincs sortörés a rövid szövegnél</span>
+                  <span class="spec-test-law">09</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">atalakit(int) — hosszú szöveg</span>
+                  <span class="spec-test-why">assertEquals — sortörés a paraméter szerint</span>
+                  <span class="spec-test-law">09</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Definiáljon void tisztit() metódust: eltávolítja a fehér karaktereket és csupa kisbetűssé alakítja!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Egyszerű void metódus, nincs kivétel → meghívjuk, majd getterrel ellenőrizzük az eredményt.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">tisztit()</span>
+                  <span class="spec-test-why">assertEquals — a getter a várt kisbetűs, trimmed értéket adja</span>
+                  <span class="spec-test-law">04</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <p class="spec-total">Összes teszteset: <strong>~5</strong></p>
+            </div></div></div>
+          </div>
+          
+          <div class="spec-card">
+            <button class="spec-trigger" aria-expanded="false">
+              <span class="spec-num">03</span>
+              <span class="spec-header-text">
+                <span class="spec-title">EvesLeolvasas / Szamla osztály</span>
+                <span class="spec-meta">6 teszteset · unchecked exception · double getFizetendo · setter határérték · toString</span>
+              </span>
+              <span class="spec-chevron"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+            <div class="spec-body"><div class="spec-body-inner"><div class="spec-body-content">
+              
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Szamla absztrakt osztály tárolja a kWh árát, rendelkezik konstruktorral. Vezesse vissza az ős konstruktorára!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Konstruktor tesztelése — nincs checked exception → a @BeforeAll-ban nem kell try-catch, egyszerűen példányosítunk.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">assertNotNull(el)</span>
+                  <span class="spec-test-why">a konstruktor sikeresen létrehozta az objektumot</span>
+                  <span class="spec-test-law">01</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"getFizetendo() visszaadja a hónap végén fizetendőt — éves fogyasztás 1/12-ede minden hónapban."</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">A visszatérési érték <strong>double</strong> → assertEquals-nál kötelező a delta (0.1), és az elvárt értéknek tizedes része legyen (pl. 416.7, nem 416.0).</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">getFizetendo(3)</span>
+                  <span class="spec-test-why">assertEquals + delta 0.1 — double értéknél mindig</span>
+                  <span class="spec-test-law">06</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Gondoskodjon róla, hogy az egységár ne lehessen negatív, és legfeljebb a jelenlegi ár kétszeresére lehessen növelni!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">Ez <strong>két határt</strong> definiál → 3 teszteset kell: érvényes érték (nem dob), negatív érték (dob), kétszeres+1 érték (dob). Mindkét kivételesetre az A-mintát használjuk.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setEgysegAr — érvényes érték</span>
+                  <span class="spec-test-why">assertEquals, try-catch nélkül (nincs checked exception)</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setEgysegAr — negatív érték</span>
+                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                <div class="spec-test-item">
+                  <span class="spec-test-name">setEgysegAr — kétszeres + 1 (túl nagy)</span>
+                  <span class="spec-test-why">A-minta: fail() a try-ben, catch üres</span>
+                  <span class="spec-test-law">02</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <div class="spec-sentence">
+                <div class="spec-sentence-quote">"Hozzon létre toString() metódust az adatok olvasható formában történő lekérdezéséhez!"</div>
+                <div class="spec-sentence-body">
+                  <p class="spec-sentence-explain">toString tesztelése → először üres Stringgel futtatjuk, a megbukott teszt actual értékét kimásoljuk és beillesztjük.</p>
+                  <span class="spec-tests-label">Tesztek:</span>
+                  <div class="spec-tests">
+                <div class="spec-test-item">
+                  <span class="spec-test-name">toString()</span>
+                  <span class="spec-test-why">assertEquals — teljes String pontos egyezés</span>
+                  <span class="spec-test-law">05</span>
+                </div>
+                  </div>
+                </div>
+              </div>
+              <p class="spec-total">Összes teszteset: <strong>~6</strong></p>
+            </div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </section>
 
-const LAWS = [
-  {
-    num: "01",
-    title: "@BeforeAll és Konstruktor tesztelés",
-    subtitle: "minden objektum a @BeforeAll-ban jön létre",
-    explanation: `A konstruktorokat <strong>sosem külön @Test metódusban</strong> hívjuk meg — minden objektumot a <code>@BeforeAll static void beforeAll()</code> metódusban hozunk létre, statikus mezőkbe mentve. Ha a konstruktor <strong>checked exception</strong>-t dobhat, minden hívás köré külön try-catch blokkot kell írni (mindkét exception-típusra külön catch). Ha az érvénytelen adatú konstruktor kivételt dob, a mező <strong>null marad</strong> — ezt a teszt majd maga kezeli.`,
-    code: `import org.junit.jupiter.api.*;
+    <section class="section">
+      <div class="container">
+        <p class="section-label">// interaktív kvíz</p>
+        <h2 class="section-title">Teszteld a Tudásod</h2>
+        <p class="section-desc">
+          Melyik törvényt kell alkalmazni az adott szituációban? Azonnali
+          visszajelzés, pontszám nyilvántartás.
+        </p>
+        <div class="quiz-score-bar">
+          <div>
+            <div class="score-label">PONTSZÁM</div>
+            <div class="score-value" id="scoreDisplay">0 / 10</div>
+          </div>
+          <div class="score-track">
+            <div class="score-fill" id="scoreFill" style="width: 0%"></div>
+          </div>
+          <button class="score-reset" id="resetBtn">Újrakezdés</button>
+        </div>
+        <div class="quiz-questions" id="quiz"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-label">// tippek</p>
+        <h2 class="section-title">Vizsgatippek</h2>
+        <ul class="tips-list">
+          <li>
+            <span class="tip-icon">💡</span>
+            <span><strong>toString() gyors megírása:</strong> Először üres Stringgel írd meg a tesztet, futtasd le, és a megbukott teszt kimenetéből másold ki az <em>actual</em> értéket — illeszd be az assertEquals-ba. Nem kell kézzel begépelni.</span>
+          </li>
+          <li>
+            <span class="tip-icon">📊</span>
+            <span><strong>Figyelj a pontozásra:</strong> Valószínűleg ahány pont van egy feladatnál, annyi teszteset kell — érdemes ebből visszaszámolni, hogy mit várnak el.</span>
+          </li>
+          <li>
+            <span class="tip-icon">📋</span>
+            <span><strong>Elemezd először a specifikációt:</strong> Mielőtt nekiállsz kódolni, olvasd végig mit kell tesztelni — dob-e kivételt, double-e az érték, van-e tömb. Utána válaszd ki a megfelelő törvényt.</span>
+          </li>
+          <li>
+            <span class="tip-icon">⚠️</span>
+            <span><strong>Ha a konstruktor kivételt dob, az objektum null marad:</strong> Mielőtt gettereket vagy settereket tesztelsz, bizonyosodj meg róla hogy az objektum tényleg létrejött a @BeforeAll-ban — különben NullPointerException-t kapsz futásidőben.</span>
+          </li>
+          <li>
+            <span class="tip-icon">🔢</span>
+            <span><strong>@Order számokban hagyj rést:</strong> Ne 1, 2, 3... hanem 1, 4, 7, 9... sorrendet használj — így ha utólag közé kell illeszteni egy tesztet, nem kell az összes számot átírni.</span>
+          </li>
+          <li>
+            <span class="tip-icon">🔍</span>
+            <span><strong>Checked vagy unchecked exception?</strong> Ha a konstruktor nem dob checked exceptiont (pl. <code>Butor</code>), a @BeforeAll-ban nem kell try-catch — egyenesen példányosítasz. Csak checked exception esetén kell a try-catch blokk.</span>
+          </li>
+          <li>
+            <span class="tip-icon">✏️</span>
+            <span><strong>A fail() üzenete legyen informatív:</strong> Ne csak <code>"hiba"</code> — írd bele mi a probléma és mikor keletkezik, pl. <code>"Hiba a setMeret() működésében, érvényes értéknél kivétel keletkezett!"</code>. Vizsgán ez mutatja hogy érted a tesztet.</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-label">// leadás előtt</p>
+        <h2 class="section-title">Leadás Előtti Ellenőrzőlista</h2>
+        <p class="section-desc">Futtasd végig ezt a listát mielőtt beadod a dolgozatot.</p>
+        <ul class="checklist">
+          <li><label><input type="checkbox"> Minden <code>assert</code>-nek van üzenet (message) paramétere</label></li>
+          <li><label><input type="checkbox"> Minden double értékben van tizedes rész — nem <code>4.0</code> hanem <code>4.7</code>, és mindenhol meg van adva a delta (<code>0.1</code>)</label></li>
+          <li><label><input type="checkbox"> Minden kivételt megvizsgáltál — érvénytelen értékre dob, érvényes értékre nem dob</label></li>
+          <li><label><input type="checkbox"> Mindenhol a helyzetnek megfelelő assertiont használtad (szám/String → assertEquals, tömb → assertArrayEquals, objektumazonosság → assertSame, null → assertNull / assertNotNull)</label></li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <span>Szoftvertesztelés Alapok</span> · JUnit 5 · Java Maven ·
+        Vizsgafelkészítő
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script>
+      // ── DATA ──────────────────────────────────────────────────────────────────
+
+      const LAWS = [
+        {
+          num: "01",
+          title: "@BeforeAll és Konstruktor tesztelés",
+          subtitle: "minden objektum a @BeforeAll-ban jön létre",
+          explanation: `A konstruktorokat beforAll() metódusban teszteljük. Ha az a feladat hogy a helyes pédlányokkal dolgozzunk akkor létrehozunk egy tömböt amibe a helyesen létrehozott objektumokat rakunk`,
+          code: `import org.junit.jupiter.api.*;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -245,33 +1213,36 @@ class PizzaTest {
 
         try {
             p1 = new Pizza("Pizza", 24, 2500);  // érvényes → p1 nem null
-            pizzak.add(p1);
-        } catch (PizzaMeretException pme) {
+            pizzak.add(p1); // ha érvénytelen → nem fut le a tömbbe rakás
+        } catch (PizzaMeretException pme) { 
         } catch (PizzaArException pae) {
         }
 
         try {
             p2 = new Pizza("Songoku", 900, 300); // érvénytelen méret → p2 null
-            pizzak.add(p2);
+            pizzak.add(p2); // ha érvénytelen → nem fut le a tömbbe rakás
         } catch (PizzaMeretException pme) {
         } catch (PizzaArException pae) {
         }
 
         try {
             p3 = new Pizza("Kuko rica", 32, -2000); // érvénytelen ár → p3 null
-            pizzak.add(p3);
+            pizzak.add(p3); // ha érvénytelen → nem fut le a tömbbe rakás
         } catch (PizzaMeretException pme) {
         } catch (PizzaArException pae) {
         }
 
         try {
             p4 = new Pizza("sZALÁ MI", 50, 6000);  // érvényes → p4 nem null
-            pizzak.add(p4);
+            pizzak.add(p4); // ha érvénytelen → nem fut le a tömbbe rakás
         } catch (PizzaMeretException pme) {
         } catch (PizzaArException pae) {
         }
-    }
 
+    }
+    // ha a két catch blokkot egybe akarjuk kezelni akkor ezt az alábbi módón tehetjük meg
+    //} catch (PizzaMeretException pme | PizzaArException pae) {
+    //}
     // Ha a konstruktor nem dob checked exception-t (pl. Butor),
     // a try-catch el is maradhat:
     // private static Butor b1, b2;
@@ -280,706 +1251,424 @@ class PizzaTest {
     //     b2 = new Butor(b1);
     // }
 }`,
-    why: `<strong>Miért fontos:</strong> A @BeforeAll egyszerre dokumentálja és teszteli a konstruktor összes variánsát. Az érvényes adatú objektumok a getter/setter tesztekhez kellenek; az érvénytelen adatú objektumok null maradnak, amit a lista mérete vagy assertNull ellenőrizhet.`
-  },
-  {
-    num: "02",
-    title: "Exception vizsgálata érvénytelen értékkel",
-    subtitle: "kétféle helyes try-catch minta",
-    explanation: `Ha azt várjuk, hogy egy metódus kivételt dobjon, <strong>kétféle helyes minta</strong> létezik — mindkettőt elfogadja a vizsgáztató:<br><br>
-<strong>A-minta (PizzaTest stílus):</strong> a try blokkban az érvénytelen hívás után azonnal <code>fail("üzenet")</code> — ha idáig ér a kód, az azt jelenti, hogy nem dobott kivételt, tehát a teszt megbukik. A catch blokk <strong>üres</strong>.<br><br>
-<strong>B-minta (ButorTest / EvesLeolvasasTest stílus):</strong> a catch blokkban <code>return</code> — ha kivétel keletkezett, a metódus sikeresen visszatér. Ha nem keletkezett kivétel, a kód eljut a try-catch utáni <code>Assertions.fail("üzenet")</code> sorhoz.<br><br>
-<strong>Az üres catch (fail() nélkül) soha nem helyes</strong> — az elnyeli a hibát és a teszt hamisan zöld marad.`,
-    code: `import org.junit.jupiter.api.*;
+          why: `<strong>Miért fontos:</strong> A @BeforeAll egyszerre dokumentálja és teszteli a konstruktor összes variánsát. Az érvényes adatú objektumok a getter/setter tesztekhez kellenek; az érvénytelen adatú objektumok null maradnak, amit a lista mérete vagy assertNull ellenőrizhet.`,
+        },
+        {
+          num: "02",
+          title: "Kivételkezlős metódus vizsgálata",
+          subtitle: " 3 teszteset minimum",
+          explanation: `Ha egy metódus kivételt kezel akkor azt 3 tesztel vizsgálhatjuk meg. Kell kettő darab arra hogy helyesen dob kivételt és kell egy értékvizsgálatra. FONTOS ha egy kivételkezelős függvény benne van a konstruktorba, akkor a beforAll()-ba is kell try-catch blokkot rakni ahogy az 1. törvény mutatja`,
+          code: `import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ExceptionVizsgalatTest {
     private static Pizza p4;
-    private static EvesLeolvasas el3;
 
     @BeforeAll
     static void beforeAll() {
         try {
             p4 = new Pizza("sZALÁ MI", 50, 6000);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-        el3 = new EvesLeolvasas(200, 8000);
+        } catch (PizzaMeretException pme | PizzaArException pae) {
     }
 
-    // ✅ A-minta (PizzaTest) — fail() a try-ben, catch üres
+    // ✅ (PizzaTest) - fail() a try-ben, catch üres
     @Test
     @Order(1)
-    void setMeretRosszErtekTeszt() {
+    void setMeretRosszErtekExceptionTeszt() {
         try {
             p4.setMeret(2);
-            fail("Hiba a setMeret() metódus működésében, mert érvénytelen érték esetén nem keletkezik kivétel!");
+            fail("Hiba a setMeret() metódus működésében, érvénytelen érték esetén nem keletkezik kivétel!");
         } catch (PizzaMeretException pme) {
-        }
+        } 
     }
-
+    // ⛔ (PizzaTest) — fail() a catch, catch üres
     @Test
     @Order(2)
-    void setBruttoArRosszErtekTest() {
+    void setMeretJóÉrtékExceptionTeszt() {
         try {
-            p4.setBruttoAr(-4000);
-            fail("Hiba a setBruttoAr() metódus működésében, mert érvénytelen érték esetén nem keletkezik kivétel!");
-        } catch (PizzaArException pae) {
+            p4.setMeret(32);
+        } catch (PizzaMeretException pme) {
+          fail("Hiba a setMeret() metódus működésében, mert érvényes érték esetén keletkezett kivétel!");
         }
-    }
 
-    // ✅ B-minta (ButorTest/EvesLeolvasasTest) — return a catch-ben, fail() kívül
-    @Test
+    }
+    // ↔️ (PizzaTest)-érték() itt a catch-be rakhatunk fail-t mivel nem kellene hogy exception keletkezzen
+      @Test
     @Order(3)
-    void setEgysegArNegativTeszt() {
+    void setMeretJóÉrtékExceptionTeszt() {
         try {
-            el3.setEgysegAr(-50);
-        } catch (IllegalArgumentException iae) {
-            return;
+            p4.setMeret(32);
+            Assertion.Assertequals(32, p4.getMeret(), 
+            /*itt nem kell delta azaz 0.1 mivel int van*/, 
+            "Hiba a setMeret() metódus működésében")
+        } catch (PizzaMeretException pme) {
+          fail("Hiba a setMeret() metódus működésében, mert érvényes érték esetén keletkezett kivétel!");
         }
-        Assertions.fail("Nem keletkezett IllegalArgumentException negatív ár esetén!");
-    }
 
-    @Test
-    @Order(4)
-    void setEgysegArDuplaTeszt() {
-        try {
-            el3.setEgysegAr(500);
-        } catch (IllegalArgumentException iae) {
-            return;
-        }
-        Assertions.fail("Nem keletkezett IllegalArgumentException nagyobb, mint dupla ár esetén!");
-    }`,
-    why: `<strong>Miért fontos:</strong> Az üres catch blokk fail() nélkül a leggyakoribb vizsgahiba — a teszt hamisan zöld marad, holott a kód soha nem dobja a várt kivételt. Mindig kell vagy fail() a try-ben (A-minta), vagy return a catch-ben + fail() utána (B-minta).`
-  },
-  {
-    num: "03",
-    title: "Érvényes setter tesztelése",
-    subtitle: "try → setter + assertEquals · catch → fail()",
-    explanation: `Ha egy setter <strong>checked exception-t dobhat</strong>, az érvényes értékkel történő tesztelés mintája: a try blokkba kerül a setter hívása, majd közvetlenül utána az <code>assertEquals</code> a getterrel ellenőrizve — a catch blokkba <code>fail("üzenet")</code> kerül, mert érvényes értéknél nem szabadna kivételnek keletkezni.<br><br>Ha a setter <strong>nem dobhat</strong> checked exception-t, try-catch nélkül, egyszerűen hívjuk a settert és assertEquals-szal ellenőrzünk.`,
-    code: `import org.junit.jupiter.api.*;
+
+    }
+    `,
+          why: `Figyelj hogy nem elég 3 tesztet írni akkor ha nem csak egy sima értéket tesztelsz hanem például egy tömböt mivel ott a tömb vizsgálat törvényeit (3.) is el kell végezd`,
+        },
+        {
+          num: "03",
+          title: "Egy Tömb tesztelése",
+          subtitle: "3 teszteset minimum",
+          explanation: `Ha egy tömböt kell tesztelni azt 3 tesztesettel fedhetjük le általában kell egy üres tömb egy helyes értékekkel feltöltött tömb és egy helytelen értékekkel feltöltött tömb, így nagy részben eleget teszünk a határérték-analízisnek és az kvivalencia-particionálásnak`,
+          code: `import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+// ═══════════════════════════════════════════════════════════════════
+// 1. ESET — a metódus le van specifikálva hogy checked exception-t dob
+// ═══════════════════════════════════════════════════════════════════
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ErvenyesSetterTest {
-    private static Pizza p1, p4;
-    private static EvesLeolvasas el2;
+class MeresKivetelesTest {
+    private static Meres m1;
 
     @BeforeAll
     static void beforeAll() {
-        try {
-            p1 = new Pizza("Pizza", 24, 2500);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-        try {
-            p4 = new Pizza("sZALÁ MI", 50, 6000);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-        el2 = new EvesLeolvasas(50, 8000);
+        m1 = new Meres();
     }
 
-    // ✅ Checked exception-t dobó setter — try + assertEquals + catch + fail()
+    //ha úgy van megírva a feladat hogy üres tömb nem kell kivétel, → catch-ben fail() ha nem akkor a fail a try blokkban lesz mivel az a hibás ha nem dob kivételt
     @Test
     @Order(1)
-    void setMeretHelyesErtekTest() {
+    void uresTombTest() {
+        double[] ures = {};
         try {
-            p4.setMeret(24);
-            Assertions.assertEquals(24, p4.getMeret(), "Hiba a setMeret() metódus működésében!");
-        } catch (PizzaMeretException pme) {
-            fail("Hiba a setMeret() metódus működésében, mert érvényes érték esetén keletkezik kivétel!");
+            m1.atlag(ures);
+        } catch (ErvenytelenErtekException eee) {
+            fail("Hiba az atlag() metódus működésében, üres tömbre kivétel keletkezett!");
         }
     }
 
+    // helyes értékek → nem kell kivétel, értéket ellenőrzünk, catch-ben fail() itt a 2. törvény alapján járunk el
     @Test
     @Order(2)
-    void setBruttoArHelyesErtekTest() {
+    void helyesErtekekTombTest() {
+        double[] ertekek = {2.5, 4.3, 5.9};
         try {
-            p1.setBruttoAr(4000);
-            Assertions.assertEquals(4000, p1.getBruttoAr(), "Hiba a setBruttoAr() metódus működésében!");
-        } catch (PizzaArException pae) {
-            fail("Hiba a setBruttoAr() metódus működésében, mert érvényes érték esetén keletkezik kivétel!");
+            Assertions.assertEquals(4.23, m1.atlag(ertekek), 0.1,
+                "Hiba az atlag() metódus működésében helyes értékek esetén!");
+        } catch (ErvenytelenErtekException eee) {
+            fail("Hiba az atlag() metódus működésében, helyes értékekre kivétel keletkezett!");
         }
     }
 
-    // ✅ Unchecked exception — try-catch nélkül, egyszerűen assertEquals
+    // helytelen értékek → kivételt KELL dobnia de ez is a feladat leírásátol függ
     @Test
     @Order(3)
-    void setEgysegArTeszt() {
-        el2.setEgysegAr(100);
-        Assertions.assertEquals(100, el2.getEgysegAr(), "Hiba a setEgysegAr() metódus működésében!");
-    }`,
-    why: `<strong>Miért fontos:</strong> A setter meghívása és az eredmény ellenőrzése szétválasztható. A getter nélkül nem tudod, hogy az érték valóban a megfelelő mezőbe íródott-e — a metódus lehet üres is, és a teszt mégis zöld maradna.`
-  },
-  {
-    num: "04",
-    title: "Getter tesztelése",
-    subtitle: "Assertions.assertEquals(elvárt, getter(), üzenet)",
-    explanation: `A getter tesztelése a legegyszerűbb eset: ha a getter <strong>nem dob checked exception-t</strong>, egyszerűen <code>Assertions.assertEquals(elvártÉrték, obj.getX(), "hibaüzenet")</code>. Mindig add meg az üzenet paramétert — ez jelenik meg, ha a teszt megbukik.<br><br>A <code>Assertions.</code> előtagot kötelező kiírni, hacsak nem importálod <code>static import</code>-tal a metódust.`,
-    code: `import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PizzaTest {
-    private static Pizza p1, p4;
-
-    @BeforeAll
-    static void beforeAll() {
+    void helytelenErtekekTombTest() {
+        double[] ertekek = {-1.3, 3.5, -2.7};
         try {
-            p1 = new Pizza("Pizza", 24, 2500);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
+            m1.atlag(ertekek);
+            fail("Hiba az atlag() metódus működésében, érvénytelen értékre nem keletkezett kivétel!");
+        } catch (ErvenytelenErtekException eee) {
         }
-        try {
-            p4 = new Pizza("sZALÁ MI", 50, 6000);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-    }
-
-    @Test
-    @Order(1)
-    void getNevTest() {
-        Assertions.assertEquals("Pizza", p1.getNev(), "Hiba a getNev() metódus működésében!");
-    }
-
-    @Test
-    @Order(2)
-    void getMeretTest() {
-        Assertions.assertEquals(50, p4.getMeret(), "Hiba a getMeret() metódus működésében!");
-    }
-
-    @Test
-    @Order(3)
-    void getBruttoArTest() {
-        Assertions.assertEquals(2500, p1.getBruttoAr(), "Hiba a getBruttoAr() metódus működésében!");
-    }
-}`,
-    why: `<strong>Miért fontos:</strong> A getter teszt ellenőrzi, hogy a @BeforeAll-ban létrehozott objektum valóban a várt értékkel rendelkezik-e. A hibaüzenet nélküli assertEquals esetén a megbukott teszt kimenete nehezen értelmezhető.`
-  },
-  {
-    num: "05",
-    title: "toString() tesztelése",
-    subtitle: "Assertions.assertEquals(elvártString, obj.toString(), üzenet)",
-    explanation: `A <code>toString()</code> tesztelése egyszerű assertEquals: az elvárt String értéket szó szerint meg kell adni, pontosan illeszkedve a megvalósítás kimenetéhez. A <strong>teljes Stringet</strong> kell ellenőrizni, nem csak egy részét. Ha a toString() a @BeforeAll-ban módosított mezőktől függ (pl. setNev után), az @Order-rel biztosítsd a helyes sorrendet.`,
-    code: `import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ToStringTest {
-    private static Pizza p1;
-    private static EvesLeolvasas el;
-    private static Butor b1;
-
-    @BeforeAll
-    static void beforeAll() {
-        try {
-            p1 = new Pizza("Pizza", 24, 2500);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-        el = new EvesLeolvasas(50, 5000);
-        b1 = new Butor(1, 1, 1, "Asztal");
-    }
-
-    @Test
-    @Order(9)  // az előző tesztek p1-et módosíthatták (setNev, setBruttoAr)
-    void toStringTest() {
-        Assertions.assertEquals(
-            "Pizza{név: 'Kukorica', méret: 24 cm, bruttó ár: 4000 Ft}",
-            p1.toString(),
-            "Hiba a toString() metódus működésében!"
-        );
-    }
-
-    @Test
-    void toStringTeszt_EvesLeolvasas() {
-        Assertions.assertEquals(
-            "[Ár: 50.0 Ft, Fogyasztás: 5000.0 kWh]",
-            el.toString(),
-            "Hiba a toString() működésében!"
-        );
-    }
-
-    @Test
-    void toStringTeszt_Butor() {
-        Assertions.assertEquals(
-            "Szélesség: 1, Magasság: 1, Mélység: 1, Megnevezés: Asztal",
-            b1.toString(),
-            "Hiba a toString() működésében!"
-        );
-    }
-}`,
-    why: `<strong>Miért fontos:</strong> A toString() az egyik leggyakoribb vizsgafeladat. Az elvárt String pontos egyezése szükséges — szóköz, írásjelek, ékezetek mind számítanak. A @Order biztosítja, hogy a korábbi tesztek által módosított mezők helyes értékkel szerepeljenek.`
-  },
-  {
-    num: "06",
-    title: "Double értékek tesztelése delta-val",
-    subtitle: "soha ne egész szám — mindig 3.6, 5.8, 62500.0",
-    explanation: `Ha egy metódus <strong>double értéket</strong> ad vissza, az assertEquals-nak <strong>mindig meg kell adni a delta paramétert</strong> (a megengedett eltérést, pl. 0.1). Az elvárt értéket <strong>soha ne írd egész számként</strong> — mindig valós számként (pl. <code>1.0</code>, <code>62500.0</code>, <code>3.6</code>), hogy egyértelmű legyen, hogy double összehasonlítás történik.`,
-    code: `import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class DoubleErtekTest {
-    private static Butor b1, b2;
-    private static EvesLeolvasas el;
-
-    @BeforeAll
-    static void beforeAll() {
-        b1 = new Butor(1, 1, 1, "Asztal");
-        b2 = new Butor(b1);
-        el = new EvesLeolvasas(50, 5000);
-    }
-
-    // ❌ ROSSZ — egész számot ad meg várható értékként
-    // Assertions.assertEquals(1, b1.getTerfogat(), 0.1, "...");
-    // Assertions.assertEquals(2, b1.getOsszterfogat(), 0.1, "...");
-
-    // ✅ HELYES — valós szám (.0 vagy tizedestört), delta mindig megvan
-    @Test
-    @Order(1)
-    void getTerfogatTeszt() {
-        Assertions.assertEquals(1.0, b1.getTerfogat(), 0.1,
-            "Hiba a getTerfogat() működésében!");
-    }
-
-    @Test
-    @Order(2)
-    void getOsszterfogatTeszt() {
-        ArrayList<Butor> butorok = new ArrayList<>();
-        butorok.add(b1);
-        butorok.add(b2);
-        Assertions.assertEquals(2.0, b1.getOsszterfogat(butorok), 0.1,
-            "Hiba a getOsszterfogat() működésében!");
-    }
-
-    @Test
-    @Order(3)
-    void getFizetendoTeszt() {
-        Assertions.assertEquals(62500.0, el.getFizetendo(3), 0.1,
-            "Hiba a getFizetendo() metódus működésében!");
-    }
-}`,
-    why: `<strong>Miért fontos:</strong> Lebegőpontos számok nem hasonlíthatók pontosan egyenlőség alapján a kerekítési hibák miatt. A delta nélküli double assertEquals időnként megbukik akkor is, ha az implementáció helyes. Az egész szám megadása (pl. 1 helyett 1.0) félrevezető — nem derül ki, hogy double összehasonlítást vártunk.`,
-    antipattern: `<strong>Látott hiba (ButorTest.java):</strong> A getOsszterfogatTeszt létrehozza a butorok listát (b1, b2 elemekkel), de aztán <code>b1.getOsszterfogat()</code>-ot hívja paraméter nélkül — a lista nem kerül átadásra. Ez vagy a metódus szignatúrájának félreértése, vagy tévesen statikus metódus feltételezése.`
-  },
-  {
-    num: "07",
-    title: "Tesztmetódus névkonvenció",
-    subtitle: "leíró nevek — feltétel és eredmény a névben",
-    explanation: `A tesztmetódus neve <strong>egyértelmű dokumentáció</strong> kell legyen. A forrásokban kétféle elnevezési stílt látunk:<br><br>
-<strong>PizzaTest stílus:</strong> <code>metodusNev + Helyes/Rossz/Teszt</code> — pl. <code>setMeretHelyesErtekTest</code>, <code>setMeretRosszErtekTeszt</code><br><br>
-<strong>SzovegTest stílus (részletesebb):</strong> metódus + feltétel + eset — pl. <code>atalakitTesztParameternelkulRovid</code>, <code>atalakitTesztParameterrelHosszu</code><br><br>
-Kerülendő: <code>test1()</code>, <code>proba()</code>, <code>metodus()</code> — ezek semmit nem mondanak a feltételről.`,
-    code: `// PizzaTest.java névkonvenció:
-void getNevTest()                   // getter tesztelése
-void setMeretHelyesErtekTest()      // setter érvényes értékkel
-void setMeretRosszErtekTeszt()      // setter érvénytelen értékkel
-void setBruttoArHelyesErtekTest()   // setter érvényes értékkel
-void setBruttoArRosszErtekTest()    // setter érvénytelen értékkel
-void toStringTest()                 // toString() tesztelése
-void atlag()                        // átlag számítása
-
-// ButorTest.java névkonvenció:
-void masoloKonstruktorTeszt()       // másoló konstruktor
-void negativKonstruktorTeszt()      // érvénytelen (negatív) konstruktor
-void toStringTeszt()                // toString() tesztelése
-void getOsszterfogatTeszt()         // metódus tesztelése
-
-// SzovegTest.java névkonvenció (leírobb):
-void tisztitTeszt()
-void atalakitTesztParameternelkulRovid()   // nincs param + rövid szöveg
-void atalakitTesztParameternelkulHosszu()  // nincs param + hosszú szöveg
-void atalakitTesztParameterrelRovid()      // van param + rövid szöveg
-void atalakitTesztParameterrelHosszu()     // van param + hosszú szöveg
-
-// EvesLeolvasasTest.java névkonvenció:
-void getFizetendoTeszt()
-void setEgysegArTeszt()             // érvényes érték
-void setEgysegArNegativTeszt()      // érvénytelen: negatív
-void setEgysegArDuplaTeszt()        // érvénytelen: dupla ár`,
-    why: `<strong>Miért fontos:</strong> Ha 20 teszt fut és 3 megbukik, a leíró nevek azonnal megmutatják, melyik metódus melyik viselkedése hibás. A <code>test1()</code> típusú nevek esetén fogalmad sincs, mi tört el.`
-  },
-  {
-    num: "08",
-    title: "@TestMethodOrder és @Order",
-    subtitle: "tesztek futtatási sorrendjének meghatározása",
-    explanation: `Ha a tesztek között <strong>függőség</strong> van (pl. egy setter teszt módosítja az objektumot, amit később egy toString() teszt ellenőriz), az osztályt <code>@TestMethodOrder(MethodOrderer.OrderAnnotation.class)</code>-szal kell jelölni, és minden tesztmetódushoz <code>@Order(n)</code> annotációt kell adni.<br><br>A <code>PizzaTest.java</code>-ban a <code>setNevTest()</code> (@Order 4) átnevezi p1-et "Kukorica"-ra, és a <code>toStringTest()</code> (@Order 9) már ezt az új nevet ellenőrzi — ezért kritikus a sorrend.`,
-    code: `import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)  // ← kötelező az osztályon
-class PizzaTest {
-    private static Pizza p1, p4;
-
-    @BeforeAll
-    static void beforeAll() {
-        try {
-            p1 = new Pizza("Pizza", 24, 2500);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-        try {
-            p4 = new Pizza("sZALÁ MI", 50, 6000);
-        } catch (PizzaMeretException pme) {
-        } catch (PizzaArException pae) {
-        }
-    }
-
-    @Test
-    @Order(1)
-    void getNevTest() {
-        Assertions.assertEquals("Pizza", p1.getNev(), "Hiba a getNev() metódus működésében!");
-    }
-
-    @Test
-    @Order(4)
-    void setNevTest() {
-        p1.setNev("Kukorica");             // p1 neve megváltozik!
-        Assertions.assertEquals("Kukorica", p1.getNev(), "Hiba a setNev() metódus működésében!");
-    }
-
-    @Test
-    @Order(7)
-    void setBruttoArHelyesErtekTest() {
-        try {
-            p1.setBruttoAr(4000);          // p1 ára is megváltozik!
-            Assertions.assertEquals(4000, p1.getBruttoAr(), "Hiba a setBruttoAr() metódus működésében!");
-        } catch (PizzaArException pae) {
-            fail("Hiba a setBruttoAr() metódus működésében, mert érvényes érték esetén keletkezik kivétel!");
-        }
-    }
-
-    @Test
-    @Order(9)
-    void toStringTest() {
-        // p1 neve már "Kukorica", ára már 4000 — csak ha @Order helyes!
-        Assertions.assertEquals(
-            "Pizza{név: 'Kukorica', méret: 24 cm, bruttó ár: 4000 Ft}",
-            p1.toString(),
-            "Hiba a toString() metódus működésében!"
-        );
-    }
-}`,
-    why: `<strong>Miért fontos:</strong> @Order nélkül a JUnit tetszőleges sorrendben futtathatja a teszteket — ami az egyik futásnál zöld, a másiknál megbukhat. A PizzaTest.java-ban a toString teszt csak akkor helyes, ha a setNev és setBruttoAr tesztek már lefutottak előtte.`
-  },
-  {
-    num: "09",
-    title: "Határérték és variáns tesztelése",
-    subtitle: "rövid/hosszú, érvényes/érvénytelen, egyszeres/kétszeres",
-    explanation: `Ugyanazt a metódust <strong>különböző bemeneti esetekkel</strong> kell tesztelni: rövid és hosszú bemenet, érvényes és érvénytelen érték, minimum és maximum közelében lévő értékek. A <code>SzovegTest.java</code>-ban minden metódust legalább két esettel tesztelnek (Rovid/Hosszu). Az <code>EvesLeolvasasTest.java</code>-ban ugyanazt a settert háromféleképpen tesztelik: érvényes értékkel, negatív értékkel, és kétszeres (túl nagy) értékkel.`,
-    code: `import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-// SzovegTest.java mintájára — rövid és hosszú eset
-class SzovegTest {
-    private static Szoveg sz, sz3, sz4, sz5;
-
-    @BeforeAll
-    static void beforeAll() {
-        sz  = new Szoveg("alma");                        // rövid szöveg
-        sz3 = new Szoveg("12345678901234567890123");     // hosszú szöveg
-        sz4 = new Szoveg("alma");                        // rövid, paraméterrel
-        sz5 = new Szoveg("alma");                        // rövid, kis limittel
-    }
-
-    @Test
-    void atalakitTesztParameternelkulRovid() {
-        Assertions.assertEquals("alma", sz.atalakit(),
-            "Az atalakit() működése nem megfelelő rövid szöveg esetén!");
-    }
-
-    @Test
-    void atalakitTesztParameternelkulHosszu() {
-        String er = "1234567890\n1234567890\n123";
-        Assertions.assertEquals(er, sz3.atalakit(),
-            "Az atalakit() működése nem megfelelő hosszú szöveg esetén!");
-    }
-
-    @Test
-    void atalakitTesztParameterrelRovid() {
-        Assertions.assertEquals("alma", sz4.atalakit(5),
-            "Az atalakit(hossz) működése nem megfelelő rövid szöveg esetén!");
-    }
-
-    @Test
-    void atalakitTesztParameterrelHosszu() {
-        String er = "a\nl\nm\na";
-        Assertions.assertEquals(er, sz5.atalakit(1),
-            "Az atalakit(hossz) működése nem megfelelő hosszú szöveg esetén!");
     }
 }
 
-// EvesLeolvasasTest.java mintájára — érvényes, negatív, dupla ár
-// void setEgysegArTeszt()      → érvényes érték
-// void setEgysegArNegativTeszt() → negatív → kivétel (B-minta: return a catch-ben)
-// void setEgysegArDuplaTeszt()   → dupla árnál nagyobb → kivétel`,
-    why: `<strong>Miért fontos:</strong> Egyetlen "boldog út" teszt nem elegendő. A legtöbb hiba a szélsőértékeknél keletkezik — rövid/hosszú bemenet, nulla, negatív, vagy a határt éppen átlépő érték. A forrásokban minden metódust legalább 2 esettel tesztelnek.`
-  },
-  {
-    num: "10",
-    title: "Másoló konstruktor tesztelése",
-    subtitle: "minden mező assertEquals + negativKonstruktorTeszt",
-    explanation: `A másoló konstruktor tesztelésekor a <code>ButorTest.java</code>-ban látott minta szerint minden mezőt ellenőrizni kell, <strong>egy tesztmetóduson belül</strong> (ez elfogadott — a forrás is így csinálja). A <code>negativKonstruktorTeszt()</code> a B-mintát alkalmazza: return a catch-ben, majd <code>Assertions.fail()</code> a try-catch után.`,
-    code: `import org.junit.jupiter.api.*;
+// ═══════════════════════════════════════════════════════════════════
+// 2. ESET — a metódus NINCS le specifikálva hogy dobjon kivételt
+// ═══════════════════════════════════════════════════════════════════
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class MeresTest {
+    private static Meres m1;
+
+    @BeforeAll
+    static void beforeAll() {
+        m1 = new Meres();
+    }
+
+    // üres tömb → egyszerűen meghívjuk, try-catch nélkül
+    @Test
+    @Order(1)
+    void uresTombTest() {
+        double[] ures = {};
+        m1.atlag(ures);
+        Assertions.assertEquals(0.0, m1.atlag(ures), 0.0 /*itt a delta 0.0 hiszen biztosan tudjuk hogy üres tömbnél az átlag nulla kell hogy legyen*/,
+            "Hiba az atlag() metódus működésében üres tömb esetén!");
+    }
+
+    // helyes értékek → assertEquals, try-catch nélkül
+    @Test
+    @Order(2)
+    void helyesErtekekTombTest() {
+        double[] ertekek = {2.5, 4.3, 5.9};
+        Assertions.assertEquals(4.23, m1.atlag(ertekek), 0.1,
+            "Hiba az atlag() metódus működésében helyes értékek esetén!");
+    }
+
+    // helytelen értékek → assertEquals, a negatívokat kiszűri (csak 3.5 marad)
+    @Test
+    @Order(3)
+    void helyteleErtekekTombTest() {
+        double[] ertekek = {-1.3, 3.5, -2.7};
+        Assertions.assertEquals(3.5, m1.atlag(ertekek), 0.1,
+            "Hiba az atlag() metódus működésében helytelen értékek esetén!");
+    }
+}`,
+          why: `<strong>Miért fontos:</strong> minden tömbteszteléshez máshogy kell nekiálni mivel nem tudhatjuk hogy a specifikációt lekódólva milyen hibákat enged meg a metódus, fontos hogy a leglogikusabban járjunk el ha nincs konkrétan lespecifgikálva a tömbhasználó metódus működése`,
+        },
+        {
+          num: "04",
+          title: "Double értékek szabálya",
+          subtitle: "soha ne használj .0 végű értékeket double teszteknél",
+          explanation: `Ha <strong>double értéket</strong> tesztelsz, az elvárt értékben mindig legyen valódi tizedes rész (pl. <code>4.7</code>, <code>8.2</code>). A <code>4.0</code> vagy <code>5.0</code> azért rossz, mert egész számnak néz ki — nem bizonyítja, hogy a metódus valóban double-lal számol. A deltát (<code>0.1</code>) mindig meg kell adni.`,
+          code: `// ❌ ROSSZ — .0 végű értékek, egész számnak látszanak
+Assertions.assertEquals(4.0, obj.getErtek(), 0.1, "Hiba!");
+Assertions.assertEquals(5.0, obj.getMasikErtek(), 0.1, "Hiba!");
+
+// ✅ HELYES — valódi tizedes értékek
+Assertions.assertEquals(4.7, obj.getErtek(), 0.1, "Hiba!");
+Assertions.assertEquals(8.2, obj.getMasikErtek(), 0.1, "Hiba!");`,
+          why: `<strong>Miért fontos:</strong> A <code>4.0</code> nem bizonyítja, hogy a metódus tört számokkal is helyesen számol — egy egészekre írt hibás implementáció is átmenne. A <code>4.7</code> viszont valóban lebegőpontos számítást kényszerít ki.`,
+        },
+        {
+          num: "05",
+          title: "toString() tesztelése",
+          subtitle: "assertEquals(elvártString, obj.toString(), üzenet)",
+          explanation: `A <code>toString()</code> tesztelése egyetlen <code>assertEquals</code>: az elvárt Stringet pontosan kell megadni.`,
+          code: `@Test
+void toStringTest() {
+    Assertions.assertEquals(
+        "Pizza{név: 'Pizza', méret: 24 cm, bruttó ár: 2500 Ft}",
+        p1.toString(),
+        "Hiba a toString() metódus működésében!"
+    );
+}`,
+          why: `<strong>Tipp — ne gépeld be kézzel:</strong> Írd meg először üres Stringgel, futtasd le a tesztet, és a megbukott teszt kimenetéből másold ki az <em>actual</em> értéket — azt illeszd be az assertEquals-ba. Így nem vesztegetsz időt pontos begépeléssel.`,
+        },
+        {
+          num: "06",
+          title: "@TestMethodOrder és @Order",
+          subtitle: "a tesztek mindig a megadott sorrendben futnak le",
+          explanation: `Az osztályra kell a <code>@TestMethodOrder</code>, minden tesztre az <code>@Order(n)</code>. Ha egy setter megváltoztatja az objektumot és a toString arra épít, a sorrend kritikus.`,
+          code: `@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class PizzaTest {
+
+    @Test
+    @Order(1)
+    void getNevTest() { ... }
+
+    @Test
+    @Order(2)
+    void setNevTest() { ... }   // p1 neve megváltozik
+
+    @Test
+    @Order(3)
+    void toStringTest() { ... } // már az új nevet ellenőrzi
+}`,
+          why: `<strong>Miért fontos:</strong> @Order nélkül a JUnit bármilyen sorrendben futtathatja a teszteket — ami most zöld, holnap megbukhat.`,
+        },
+        {
+          num: "07",
+          title: "assertNull és assertNotNull",
+          subtitle: "3 teszteset minimum",
+          explanation: `Ha egy metódus <strong>null-t is visszaadhat</strong> (pl. kereső metódus), 3 teszteset kell: amikor null-t ad vissza, amikor nem null-t ad vissza, és értékvizsgálat. Mivel nincs checked exception, a @BeforeAll-ban try-catch sem kell.`,
+          code: `import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ButorTest {
-    private static Butor b1, b2;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class KosarTest {
+    private static Kosar ures, teli;
 
     @BeforeAll
     static void beforeAll() {
-        b1 = new Butor(1, 1, 1, "Asztal");
-        b2 = new Butor(b1);  // másoló konstruktor
+        ures = new Kosar();
+        teli = new Kosar("alma", 3.7);
     }
 
-    // ✅ Minden mező egy tesztben — így van a forrásban is
+    // metódus null-t ad vissza — assertNull
     @Test
-    void masoloKonstruktorTeszt() {
-        Assertions.assertEquals("Asztal_masolat", b2.getMegnevezes(),
-            "Hiba a másoló konstruktor név beállításakor!");
-        Assertions.assertEquals(1, b2.getSzelesseg(),
-            "Hiba a másoló konstruktor szélesség beállításakor!");
-        Assertions.assertEquals(1, b2.getMagassag(),
-            "Hiba a másoló konstruktor magasság beállításakor!");
-        Assertions.assertEquals(1, b2.getMelyseg(),
-            "Hiba a másoló konstruktor mélység beállításakor!");
+    @Order(1)
+    void getElsoElemNullTeszt() {
+        Assertions.assertNull(ures.getElsoElem(),
+            "Hiba: üres kosárban az első elem null kell legyen!");
     }
 
-    // ✅ Negatív konstruktor — B-minta: return a catch-ben, fail() kívül
+    // metódus nem null-t ad vissza — assertNotNull
     @Test
-    void negativKonstruktorTeszt() {
-        try {
-            Butor b = new Butor(-1, -1, -1, "Asztal");
-        } catch (IllegalArgumentException iae) {
-            return;
-        }
-        Assertions.fail("Nem keletkezett IllegalArgumentException negatív méretek esetén!");
+    @Order(2)
+    void getElsoElemNemNullTeszt() {
+        Assertions.assertNotNull(teli.getElsoElem(),
+            "Hiba: feltöltött kosárban az első elem nem lehet null!");
+    }
+
+    // értékvizsgálat — a visszaadott érték helyes-e
+    @Test
+    @Order(3)
+    void getElsoElemErtekTeszt() {
+        Assertions.assertEquals("alma", teli.getElsoElem(),
+            "Hiba a getElsoElem() metódus működésében!");
     }
 }`,
-    why: `<strong>Miért fontos:</strong> A másoló konstruktor vizsgán az egyik leggyakoribb feladat. Fontos, hogy a névhez "_masolat" kerül — ezt is tesztelni kell, nem csak a méreteket. A negativKonstruktorTeszt mutatja a B-mintát, ahol a return a catch-ben jelzi a sikert.`
-  },
-  {
-    num: "11",
-    title: "Duplikált metódusnév anti-pattern",
-    subtitle: "azonos nevű metódusok → fordítási hiba",
-    explanation: `<strong>Két tesztmetódus nem kaphat azonos nevet</strong> ugyanabban az osztályban — ez fordítási hibát okoz, és egyetlen teszt sem fut le.<br><br>A <code>ButorTest.java</code>-ban pontosan ez a hiba látható: két <code>toStringTeszt()</code> nevű metódus szerepel — az egyik valójában a <code>getTerfogat()</code>-ot teszteli, de hibásan lett elnevezve. Fordítási hiba esetén vizsgán 0 pont jár.`,
-    code: `// ❌ ROSSZ — ButorTest.java-ban látott valódi hiba
-class ButorTestRossz {
-    private static Butor b1;
+          why: `<strong>Miért fontos:</strong> Az <code>assertNotNull</code> önmagában nem elég — csak azt bizonyítja, hogy nem null. Az értékvizsgáló 3. teszteset ellenőrzi, hogy a visszaadott érték tényleg helyes-e.`,
+        },
+      ];
 
-    @BeforeAll
-    static void beforeAll() {
-        b1 = new Butor(1, 1, 1, "Asztal");
-    }
+      // ── QUIZ DATA ──────────────────────────────────────────────────────────────
 
-    @Test
-    void toStringTeszt() {                              // ← 1. metódus
-        Assertions.assertEquals(
-            "Szélesség: 1, Magasság: 1, Mélység: 1, Megnevezés: Asztal",
-            b1.toString(),
-            "Hiba a toString() működésében!"
-        );
-    }
+      const QUIZ = [
+        {
+          q: "Hova kerulnek a tesztobjektumok letrehozasai?",
+          badge: "@BeforeAll",
+          opts: [
+            { text: "@BeforeAll statikus metodusba, statikus mezokbe mentve", correct: true },
+            { text: "@BeforeEach metodusba, hogy minden teszt elott frissuljon", correct: false },
+            { text: "Minden @Test elejere, helyi valtozoba", correct: false },
+            { text: "Nincs fix hely — barhovа irhatjuk", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! @BeforeAll-ban, statikus mezokbe (private static Pizza p1...). Checked exception eseten minden hivas kore kulon try-catch kell.",
+            wrong: "Nem helyes. A konstruktort MINDIG @BeforeAll-ban hivjuk, statikus mezokbe mentve.",
+          },
+        },
+        {
+          q: "Ervenytelen erteknel kivetelt kell dobni. Melyik az A-minta?",
+          badge: "Exception A-minta",
+          opts: [
+            { text: "try { rossz(); } catch(Ex e) { } — ures catch jelzi a sikert", correct: false },
+            { text: "try { rossz(); } catch(Ex e) { fail(\"uzenet\"); }", correct: false },
+            { text: "try { rossz(); fail(\"uzenet\"); } catch(Ex e) { } — fail() a try-ben, catch ures", correct: true },
+            { text: "catch(Ex e) { return; } majd fail() kivul", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! A-minta: fail() kozvetlenul a rossz hivas utan a try-ban. Ha kivetel keletkezik → catch elkapja → teszt zold. Ha nem → fail() → megbukik.",
+            wrong: "Nem helyes. Az ures catch fail() nelkul hamisan zold marad. A helyes A-minta: fail() a try-ben, catch ures.",
+          },
+        },
+        {
+          q: "Melyik assertEquals helyes double ertekhez?",
+          badge: "Double delta",
+          opts: [
+            { text: "Assertions.assertEquals(4, obj.getErtek(), \"hiba\");", correct: false },
+            { text: "Assertions.assertEquals(4.0, obj.getErtek(), \"hiba\");", correct: false },
+            { text: "Assertions.assertEquals(4.0, obj.getErtek(), 0.0, \"hiba\");", correct: false },
+            { text: "Assertions.assertEquals(4.7, obj.getErtek(), 0.1, \"hiba\");", correct: true },
+          ],
+          feedback: {
+            correct: "Helyes! Valodi tizedes ertek (4.7), delta megadva (0.1), uzenet az utolso parameter.",
+            wrong: "Nem helyes. Kell: valodi tizedes ertek (ne 4.0 vagy 4), delta (0.1), uzenet. Sorrend: (expected, actual, delta, message).",
+          },
+        },
+        {
+          q: "Hogyan erdemes megirni a toString() elvart erteket gyorsan?",
+          badge: "toString()",
+          opts: [
+            { text: "Ures Stringgel futtatjuk, a megbukott teszt actual erteket kimassoljuk es beillesztjuk", correct: true },
+            { text: "Kezzel pontosan begepeljuk a toString() kimenetett karakterenkent", correct: false },
+            { text: "contains()-szal ellenorzunk egy reszletet", correct: false },
+            { text: "assertNotNull()-lal ellenorzunk", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! Eloszor ures Stringgel irjuk meg, futtatjuk, es a megbukott teszt actual ertekebol massoljuk ki a pontos Stringet.",
+            wrong: "Nem helyes. A leggyorsabb modszer: ures Stringgel futtatni, majd az actual erteket kimaszolni a hibas teszt kimenettebol.",
+          },
+        },
+        {
+          q: "Mikor szukseges @TestMethodOrder + @Order annotacio?",
+          badge: "@Order",
+          opts: [
+            { text: "Mindig, minden tesztosztalyban kotelezo", correct: false },
+            { text: "Ha az egyik teszt modositja az objektumot es egy masik teszt erre epitk", correct: true },
+            { text: "Ha parhuzamosan akarjuk futtatni a teszteket", correct: false },
+            { text: "Ha tobb osztalybol all a tesztkeszlet", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! Ha pl. setNevTest() megvaltoztatja p1 nevet es toStringTest() mar az uj nevet ellenorzi — a sorrend kritikus.",
+            wrong: "Nem helyes. @Order csak akkor kell, ha a tesztek kozott fuggoseg van.",
+          },
+        },
+        {
+          q: "Double tomb tesztelesnel minimum hany tesztet irunk?",
+          badge: "Tomb teszt",
+          opts: [
+            { text: "1 — eleg egy helyes ertekekkel valo teszt", correct: false },
+            { text: "2 — helyes es helytelen ertekek", correct: false },
+            { text: "5 — minden lehetseges hataresetre", correct: false },
+            { text: "3 — ures tomb, helyes ertekek, helytelen ertekek", correct: true },
+          ],
+          feedback: {
+            correct: "Helyes! Ures tomb + helyes ertekek + helytelen ertekek — ez lefedi a hatarerte-analizis es az ekvivalencia-particionalas alapjait.",
+            wrong: "Nem helyes. Minimum 3 eset kell: ures tomb, helyes ertekek, helytelen ertekek.",
+          },
+        },
+        {
+          q: "Checked exception-t dobo konstruktornal mi kerul a @BeforeAll-ba?",
+          badge: "@BeforeAll",
+          opts: [
+            { text: "throws deklaracio a beforeAll() fejlecebe", correct: false },
+            { text: "Egy nagy try-catch az osszes konstruktorhivas kore", correct: false },
+            { text: "Minden konstruktorhivas kore kulon try-catch, exception-tipusonkent kulon catch", correct: true },
+            { text: "Nem kell try-catch, a JUnit automatikusan kezeli", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! Minden konstruktorhivas kore kulon try-catch — igy pontosan tudni, melyik objektum jott letre es melyik maradt null.",
+            wrong: "Nem helyes. Minden konstruktorhivashoz kulon try-catch kell, es minden exception-tipusra kulon catch ag.",
+          },
+        },
+        {
+          q: "Mi tortenik ha ket tesztmetodusnak azonos neve van az osztalyban?",
+          badge: "Forditasi hiba",
+          opts: [
+            { text: "Forditasi hiba — egyetlen teszt sem fut le", correct: true },
+            { text: "A JUnit csak az elsotet futtatja, a masodikat kihagyja", correct: false },
+            { text: "@Order annotacioval megoldhato", correct: false },
+            { text: "Futasidejeu hiba keletkezik az adott tesztenel", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! Java-ban ket azonos nevu metodus forditasi hibat okoz. Vizsgam 0 pont, mert a kod el sem fordul.",
+            wrong: "Nem helyes. Forditasi hiba keletkezik — a kod el sem indul, egyetlen teszt sem fut le.",
+          },
+        },
+        {
+          q: "Melyik tesztmetodus-nev a helyes es leiro?",
+          badge: "Nevkonvencio",
+          opts: [
+            { text: "test1()", correct: false },
+            { text: "setterTeszt()", correct: false },
+            { text: "setMeretRosszErtekTeszt()", correct: true },
+            { text: "metodus()", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! A nevbol kiderul: melyik metodust teszteli (setMeret), milyen ertekkel (RosszErtek), es mi varhato (Teszt).",
+            wrong: "Nem helyes. A helyes minta: metodusNev + HelyzesErtek/RosszErtek/Teszt. A test1() vagy metodus() semmit nem mond.",
+          },
+        },
+        {
+          q: "Ervnyes ertekkel hivod a settert, ami checked exception-t dobhat. Mi kerul a catch blokkba?",
+          badge: "Ervnyes setter",
+          opts: [
+            { text: "return; — jelzi hogy a teszt sikeres", correct: false },
+            { text: "fail(\"uzenet\") — mert ervnyes erteknel nem keletkezhet kivetel", correct: true },
+            { text: "Semmi — ures catch blokk", correct: false },
+            { text: "Az assertEquals a catch-be kerul", correct: false },
+          ],
+          feedback: {
+            correct: "Helyes! try { setter(valid); assertEquals(...); } catch(Ex e) { fail(\"ervnyes erteknel nem keletkezhet kivetel!\"); }",
+            wrong: "Nem helyes. Ervnyes erteknel a catch-be fail() kerul — ha megis kivetel keletkezik, azt jelezni kell.",
+          },
+        },
+      ];
 
-    @Test
-    void toStringTeszt() {                              // ← FORDÍTÁSI HIBA!
-        Assertions.assertEquals(1.0, b1.getTerfogat(), 0.1,
-            "Hiba a getTerfogat() működésében!");
-    }
-}
+      // ── RENDER LAWS ────────────────────────────────────────────────────────────
 
-// ✅ HELYES — egyedi, leíró nevek
-class ButorTestHelyes {
-    private static Butor b1;
-
-    @BeforeAll
-    static void beforeAll() {
-        b1 = new Butor(1, 1, 1, "Asztal");
-    }
-
-    @Test
-    void toStringTeszt() {
-        Assertions.assertEquals(
-            "Szélesség: 1, Magasság: 1, Mélység: 1, Megnevezés: Asztal",
-            b1.toString(),
-            "Hiba a toString() működésében!"
-        );
-    }
-
-    @Test
-    void getTerfogatTeszt() {
-        Assertions.assertEquals(1.0, b1.getTerfogat(), 0.1,
-            "Hiba a getTerfogat() működésében!");
-    }
-}`,
-    why: `<strong>Miért fontos:</strong> Fordítási hiba esetén egyetlen teszt sem fut le — vizsgán ez 0 pontot jelent, függetlenül attól, hogy a logika helyes lenne-e. Az elnevezési konvenció betartása egyszerre oldja meg ezt a problémát.`,
-    antipattern: `<strong>Másik hiba (ButorTest.java):</strong> A getOsszterfogatTeszt létrehozza a butorok listát, feltölti b1 és b2 elemekkel, de aztán <code>b1.getOsszterfogat()</code>-ot hívja paraméter nélkül — a lista sosem kerül átadásra. A helyes hívás: <code>b1.getOsszterfogat(butorok)</code>.`
-  }
-];
-
-// ── QUIZ DATA ──────────────────────────────────────────────────────────────
-
-const QUIZ = [
-  {
-    q: "Hol kell meghívni a konstruktort a tesztekben?",
-    badge: "@BeforeAll",
-    opts: [
-      { text: "Minden @Test metódusban külön-külön, hogy friss objektumot kapjunk", correct: false },
-      { text: "@BeforeAll static void beforeAll() metódusban, statikus mezőkbe mentve", correct: true },
-      { text: "@BeforeEach metódusban, hogy minden teszt előtt lefusson", correct: false },
-      { text: "Nincs fix hely — bárhová írhatjuk", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! A konstruktort @BeforeAll-ban, statikus mezőkbe kell meghívni — pontosan ahogy PizzaTest.java és ButorTest.java is teszi. Checked exception esetén minden hívás köré külön try-catch kell.",
-      wrong: "Nem helyes. A konstruktort MINDIG @BeforeAll-ban hívjuk meg, statikus mezőkbe (private static Pizza p1, p2, p3, p4). Nem @Test-ben és nem @BeforeEach-ben."
-    }
-  },
-  {
-    q: "Ha a konstruktor checked exception-t dobhat (pl. PizzaMeretException és PizzaArException), hogyan kell meghívni @BeforeAll-ban?",
-    badge: "@BeforeAll",
-    opts: [
-      { text: "Egy nagy try-catch blokk az összes konstruktorhívás köré", correct: false },
-      { text: "Minden konstruktorhívás köré külön try-catch, mindkét exception-típusra külön catch", correct: true },
-      { text: "throws deklarációval a beforeAll() metódus fejlécébe", correct: false },
-      { text: "Nem kell try-catch, a @BeforeAll automatikusan kezeli a kivételeket", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! Pontosan a PizzaTest.java mintája: minden konstruktorhívás köré külön try-catch, és a két exception-típusra (PizzaMeretException, PizzaArException) külön catch ágak.",
-      wrong: "Nem helyes. Minden konstruktorhíváshoz külön try-catch kell — ha egy hívásban mindkét exception lehetséges, két külön catch ág szükséges. Ha egy nagy blokkba tennénk mindent, nem lehetne megkülönböztetni, melyik objektum jött létre sikeresen."
-    }
-  },
-  {
-    q: "Exception vizsgálatakor (érvénytelen érték) melyik a helyes A-minta (PizzaTest stílus)?",
-    badge: "Exception vizsgálata",
-    opts: [
-      { text: "try { rossz(); } catch(Ex e) { /* üres */ } — az üres catch jelzi a sikert", correct: false },
-      { text: "try { rossz(); fail(\"üzenet\"); } catch(Ex e) { } — fail() a try-ben, catch üres", correct: true },
-      { text: "try { rossz(); assertEquals(true, true); } catch(Ex e) { }", correct: false },
-      { text: "catch(Ex e) { fail(\"üzenet\"); } — fail() a catch-ben", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! A-minta (PizzaTest stílus): try { rossz_hivas(); fail(\"üzenet\"); } catch(Ex e) { } — ha a kód eljut a fail()-ig, azt jelenti, nem dobott kivételt → teszt megbukik. A catch üres, mert a kivétel dobása a várt viselkedés.",
-      wrong: "Nem helyes. Az üres catch fail() nélkül a leggyakoribb vizsgahiba — a teszt hamisan zöld marad. A helyes A-minta: fail() közvetlenül a rossz hívás UTÁN a try blokkban, catch üres."
-    }
-  },
-  {
-    q: "Exception vizsgálatakor melyik a helyes B-minta (ButorTest / EvesLeolvasasTest stílus)?",
-    badge: "Exception vizsgálata",
-    opts: [
-      { text: "try { rossz(); } catch(Ex e) { fail(\"üzenet\"); }", correct: false },
-      { text: "try { rossz(); } catch(Ex e) { return; }  majd  Assertions.fail(\"üzenet\");", correct: true },
-      { text: "try { rossz(); } catch(Ex e) { assertEquals(e, null); }", correct: false },
-      { text: "catch(Ex e) { return; } és nincs fail() — a return elég", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! B-minta: try { rossz(); } catch(Ex e) { return; } — ha kivétel keletkezik, return-nel visszatér (sikeres teszt). Ha nem keletkezett kivétel, a kód eljut az Assertions.fail(\"üzenet\") sorhoz, és a teszt megbukik.",
-      wrong: "Nem helyes. B-minta: a catch blokkban return szerepel (jelzi, hogy kivétel keletkezett = siker), és a try-catch UTÁN Assertions.fail(\"üzenet\") áll — ami akkor fut, ha nem keletkezett kivétel."
-    }
-  },
-  {
-    q: "Érvényes értékkel teszteled a setMeret() settert, ami PizzaMeretException-t dobhat. Mi kerül a catch blokkba?",
-    badge: "Érvényes setter",
-    opts: [
-      { text: "return; — mert a kivétel érvényes értéknél nem várható", correct: false },
-      { text: "fail(\"üzenet\") — mert érvényes értéknél nem szabadna kivételnek keletkezni", correct: true },
-      { text: "Semmi — üres catch blokk", correct: false },
-      { text: "assertEquals(expected, getter()) — az ellenőrzés a catch-ben van", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! Érvényes értéknél: try { setter(valid); assertEquals(expected, getter(), msg); } catch(PizzaMeretException pme) { fail(\"érvényes értéknél nem keletkezhetett volna kivétel!\"); } — pontosan a PizzaTest.java setMeretHelyesErtekTest() mintája.",
-      wrong: "Nem helyes. Érvényes értéknél: az assertEquals a try blokkba kerül, a catch blokkba fail() — mert ha mégis kivétel keletkezik, azt jelezni kell."
-    }
-  },
-  {
-    q: "Melyik a helyes assertEquals double értékek esetén?",
-    badge: "Double delta",
-    opts: [
-      { text: "Assertions.assertEquals(1, b1.getTerfogat(), \"üzenet\");", correct: false },
-      { text: "Assertions.assertEquals(1.0, b1.getTerfogat(), 0.1, \"üzenet\");", correct: true },
-      { text: "Assertions.assertEquals(b1.getTerfogat(), 1, \"üzenet\");", correct: false },
-      { text: "assertTrue(b1.getTerfogat() == 1.0);", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! Double értéknél: (1) az elvárt érték valós szám legyen (1.0, nem 1), (2) mindig adjuk meg a delta paramétert (0.1), (3) az üzenet az utolsó paraméter — pontosan a ButorTest.java mintája.",
-      wrong: "Nem helyes. Double összehasonlításnál mindig szükséges a delta paraméter (pl. 0.1), és az elvárt értéket valós számként kell megadni (1.0, nem 1). Sorrend: (expected, actual, delta, message)."
-    }
-  },
-  {
-    q: "Mire való a @TestMethodOrder(MethodOrderer.OrderAnnotation.class) + @Order annotáció?",
-    badge: "@Order",
-    opts: [
-      { text: "Hogy a tesztek párhuzamosan fussanak", correct: false },
-      { text: "Hogy meghatározzuk, melyik teszt fut le elsőként, és biztosítsuk a függőségek helyes sorrendjét", correct: true },
-      { text: "Hogy kihagyjuk a nem szükséges teszteket", correct: false },
-      { text: "Hogy a tesztek betűrendben fussanak", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! A PizzaTest.java-ban pl. a setNevTest() (@Order 4) módosítja p1 nevét, és a toStringTest() (@Order 9) már az új nevet ellenőrzi — ezért kritikus a sorrend meghatározása.",
-      wrong: "Nem helyes. @Order azért kell, mert ha az egyik teszt módosítja az objektumot (pl. setNev), és egy másik teszt az új értékre épít (pl. toString), a sorrend garantálása nélkül a teszt eredménye kiszámíthatatlan."
-    }
-  },
-  {
-    q: "A SzovegTest.java-ban ugyanazt az atalakit() metódust 4-féle esettel tesztelik. Melyik elv ez?",
-    badge: "Határérték / variáns",
-    opts: [
-      { text: "Egységtesztelési redundancia — fölösleges ugyanazt 4-szer tesztelni", correct: false },
-      { text: "Határérték és variáns tesztelés — rövid/hosszú bemenet, paraméterrel/nélkül", correct: true },
-      { text: "A @BeforeAll-ban létrehozott 4 objektum miatt van 4 teszt", correct: false },
-      { text: "JUnit 5 megköveteli, hogy minden metódust legalább 4-szer teszteljenek", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! SzovegTest.java: atalakitTesztParameternelkulRovid, atalakitTesztParameternelkulHosszu, atalakitTesztParameterrelRovid, atalakitTesztParameterrelHosszu — minden variánsra és határesetre külön teszt van.",
-      wrong: "Nem helyes. A 4 teszt a határérték és variáns tesztelés elvét valósítja meg: rövid vs hosszú szöveg × paraméter nélkül vs paraméterrel = 4 eset. Minden variáns külön viselkedést fedhet fel."
-    }
-  },
-  {
-    q: "A ButorTest.java-ban két toStringTeszt() nevű metódus szerepel. Mi a következmény?",
-    badge: "Duplikált metódusnév",
-    opts: [
-      { text: "A JUnit csak az elsőt futtatja, a másodikat figyelmen kívül hagyja", correct: false },
-      { text: "Fordítási hiba keletkezik — egyetlen teszt sem fut le", correct: true },
-      { text: "Az @Order annotációval meg lehet oldani", correct: false },
-      { text: "A Java automatikusan átnevezi a másodikat toStringTeszt2()-re", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! Java-ban két azonos nevű metódus (azonos paraméterlistával) fordítási hibát okoz. Vizsgán 0 pont, mert a kód el sem indul.",
-      wrong: "Nem helyes. Java-ban nem létezhet két azonos nevű metódus ugyanabban az osztályban. Fordítási hiba keletkezik, és egyetlen teszt sem fut le."
-    }
-  },
-  {
-    q: "A toString() tesztelésekor mit kell az assertEquals-ba írni?",
-    badge: "toString()",
-    opts: [
-      { text: "assertTrue(p1.toString().contains(\"Pizza\"));", correct: false },
-      { text: "Assertions.assertEquals(\"Pizza{név: 'Kukorica', méret: 24 cm, bruttó ár: 4000 Ft}\", p1.toString(), \"üzenet\");", correct: true },
-      { text: "assertNotNull(p1.toString());", correct: false },
-      { text: "assertEquals(p1.toString(), p1.toString(), \"üzenet\");", correct: false }
-    ],
-    feedback: {
-      correct: "Helyes! A teljes elvárt Stringet pontosan meg kell adni (szó szerint, szóközökkel, írásjelekkel, ékezetekkel együtt), és az üzenet paraméter is kötelező — pontosan a PizzaTest.java toStringTest() mintája.",
-      wrong: "Nem helyes. A toString() tesztelésekor az egész elvárt Stringet pontosan meg kell adni assertEquals-szal — nem contains()-szal, nem assertNotNull-lal. A forrásban: Assertions.assertEquals(\"...\", obj.toString(), \"üzenet\")."
-    }
-  }
-];
-
-// ── RENDER LAWS ────────────────────────────────────────────────────────────
-
-function chevronSVG() {
-  return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      function chevronSVG() {
+        return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="4 6 8 10 12 6"/>
   </svg>`;
-}
+      }
 
-function renderLaws() {
-  const container = document.getElementById('laws');
-  LAWS.forEach((law, i) => {
-    const card = document.createElement('div');
-    card.className = 'law-card';
-    card.innerHTML = `
+      function renderLaws() {
+        const container = document.getElementById("laws");
+        LAWS.forEach((law, i) => {
+          const card = document.createElement("div");
+          card.className = "law-card";
+          card.innerHTML = `
       <button class="law-trigger" aria-expanded="false" aria-controls="law-body-${i}">
         <span class="law-num">${law.num}</span>
         <span class="law-header-text">
@@ -994,109 +1683,129 @@ function renderLaws() {
             <p class="law-explanation">${law.explanation}</p>
             <div class="code-label">// Kódpélda · JUnit 5</div>
             <pre><code class="language-java">${escHtml(law.code)}</code></pre>
-            ${law.antipattern ? `<div class="law-antipattern">${law.antipattern}</div>` : ''}
+            ${law.antipattern ? `<div class="law-antipattern">${law.antipattern}</div>` : ""}
             <div class="law-why">${law.why}</div>
           </div>
         </div>
       </div>`;
-    const btn = card.querySelector('.law-trigger');
-    btn.addEventListener('click', () => {
-      const open = card.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open);
-    });
-    container.appendChild(card);
-  });
-  Prism.highlightAll();
-}
+          const btn = card.querySelector(".law-trigger");
+          btn.addEventListener("click", () => {
+            const open = card.classList.toggle("open");
+            btn.setAttribute("aria-expanded", open);
+          });
+          container.appendChild(card);
+        });
+        Prism.highlightAll();
+      }
 
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+      function escHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
 
-// ── QUIZ LOGIC ─────────────────────────────────────────────────────────────
+      // ── QUIZ LOGIC ─────────────────────────────────────────────────────────────
 
-let score = 0;
-let answered = 0;
+      let score = 0;
+      let answered = 0;
 
-function updateScore() {
-  const total = QUIZ.length;
-  document.getElementById('scoreDisplay').textContent = `${score} / ${total}`;
-  document.getElementById('scoreFill').style.width = `${(score / total) * 100}%`;
-}
+      function updateScore() {
+        const total = QUIZ.length;
+        document.getElementById("scoreDisplay").textContent =
+          `${score} / ${total}`;
+        document.getElementById("scoreFill").style.width =
+          `${(score / total) * 100}%`;
+      }
 
-function renderQuiz() {
-  const container = document.getElementById('quiz');
-  container.innerHTML = '';
-  score = 0;
-  answered = 0;
-  updateScore();
+      function renderQuiz() {
+        const container = document.getElementById("quiz");
+        container.innerHTML = "";
+        score = 0;
+        answered = 0;
+        updateScore();
 
-  QUIZ.forEach((q, qi) => {
-    const card = document.createElement('div');
-    card.className = 'question-card';
-    card.dataset.answered = 'false';
+        QUIZ.forEach((q, qi) => {
+          const card = document.createElement("div");
+          card.className = "question-card";
+          card.dataset.answered = "false";
 
-    card.innerHTML = `
+          card.innerHTML = `
       <div class="question-meta">
-        <span class="question-num">Q${String(qi + 1).padStart(2, '0')}</span>
+        <span class="question-num">Q${String(qi + 1).padStart(2, "0")}</span>
         <span class="question-badge">${q.badge}</span>
       </div>
       <p class="question-text">${q.q}</p>
       <div class="options">
-        ${q.opts.map(opt => `
+        ${q.opts
+          .map(
+            (opt) => `
           <div class="option" data-correct="${opt.correct}" tabindex="0" role="button" aria-pressed="false">
             <span class="option-dot"></span>
             <span>${opt.text}</span>
-          </div>`).join('')}
+          </div>`,
+          )
+          .join("")}
       </div>
       <div class="question-feedback"></div>`;
 
-    const opts = card.querySelectorAll('.option');
-    const fb = card.querySelector('.question-feedback');
+          const opts = card.querySelectorAll(".option");
+          const fb = card.querySelector(".question-feedback");
 
-    function handleAnswer(opt) {
-      if (card.dataset.answered === 'true') return;
-      card.dataset.answered = 'true';
-      answered++;
-      const isCorrect = opt.dataset.correct === 'true';
-      opts.forEach(o => {
-        o.classList.add('disabled');
-        if (o.dataset.correct === 'true') {
-          o.classList.add('correct');
-          o.querySelector('.option-dot').textContent = '✓';
-        }
-      });
-      if (isCorrect) {
-        score++;
-        opt.classList.add('correct');
-        card.classList.add('answered-correct');
-        fb.className = 'question-feedback correct-fb show';
-        fb.innerHTML = `<strong>Helyes!</strong> ${q.feedback.correct}`;
-      } else {
-        opt.classList.add('wrong');
-        opt.querySelector('.option-dot').textContent = '✗';
-        card.classList.add('answered-wrong');
-        fb.className = 'question-feedback wrong-fb show';
-        fb.innerHTML = `<strong>Nem helyes.</strong> ${q.feedback.wrong}`;
+          function handleAnswer(opt) {
+            if (card.dataset.answered === "true") return;
+            card.dataset.answered = "true";
+            answered++;
+            const isCorrect = opt.dataset.correct === "true";
+            opts.forEach((o) => {
+              o.classList.add("disabled");
+              if (o.dataset.correct === "true") {
+                o.classList.add("correct");
+                o.querySelector(".option-dot").textContent = "✓";
+              }
+            });
+            if (isCorrect) {
+              score++;
+              opt.classList.add("correct");
+              card.classList.add("answered-correct");
+              fb.className = "question-feedback correct-fb show";
+              fb.innerHTML = `<strong>Helyes!</strong> ${q.feedback.correct}`;
+            } else {
+              opt.classList.add("wrong");
+              opt.querySelector(".option-dot").textContent = "✗";
+              card.classList.add("answered-wrong");
+              fb.className = "question-feedback wrong-fb show";
+              fb.innerHTML = `<strong>Nem helyes.</strong> ${q.feedback.wrong}`;
+            }
+            updateScore();
+          }
+
+          opts.forEach((opt) => {
+            opt.addEventListener("click", () => handleAnswer(opt));
+            opt.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleAnswer(opt);
+              }
+            });
+          });
+
+          container.appendChild(card);
+        });
       }
-      updateScore();
-    }
 
-    opts.forEach(opt => {
-      opt.addEventListener('click', () => handleAnswer(opt));
-      opt.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAnswer(opt); }
+      document.getElementById("resetBtn").addEventListener("click", renderQuiz);
+
+      document.querySelectorAll('.spec-trigger').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.spec-card');
+          const open = card.classList.toggle('open');
+          btn.setAttribute('aria-expanded', open);
+        });
       });
-    });
 
-    container.appendChild(card);
-  });
-}
-
-document.getElementById('resetBtn').addEventListener('click', renderQuiz);
-
-renderLaws();
-renderQuiz();
-</script>
-</body>
+      renderLaws();
+      renderQuiz();
+    </script>
+  </body>
 </html>
